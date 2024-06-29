@@ -80,9 +80,15 @@ public class UniversityEntity extends BaseEntity{
     @Embedded
     private Contract contract;
 
+    @Column(name="country_id")
+    private UUID countryId;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "country_id")
+    @JoinColumn(name = "country_id",insertable=false,updatable=false)
     private CountryEntity country;
+
+    @Column(name = "city_id")
+    private UUID cityId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id")
@@ -91,11 +97,9 @@ public class UniversityEntity extends BaseEntity{
     @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FacultyEntity> faculties;
 
-//    public UniversityEntity(String name, UUID countryId, UUID cityId) {
-//        this.name = name;
-//        this.country = new CountryEntity();
-//        this.country.setId(countryId);
-//        this.city = new CityEntity();
-//        this.city.setId(cityId);
-//    }
+    public UniversityEntity(String name, UUID countryId, UUID cityId) {
+        this.name = name;
+        this.countryId =  countryId;
+        this.cityId = cityId;
+    }
 }

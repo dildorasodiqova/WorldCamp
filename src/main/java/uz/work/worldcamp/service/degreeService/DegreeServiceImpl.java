@@ -1,44 +1,78 @@
 package uz.work.worldcamp.service.degreeService;
 
-public class DegreeServiceImpl {
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import uz.work.worldcamp.dtos.createDto.DegreeCreateDTO;
+import uz.work.worldcamp.dtos.responceDto.DegreeResponseDTO;
+import uz.work.worldcamp.entities.DegreeEntity;
+import uz.work.worldcamp.exception.DataNotFoundException;
+import uz.work.worldcamp.repositories.DegreeRepository;
+
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class DegreeServiceImpl implements DegreeService{
+    private final DegreeRepository degreeRepository;
+    @Override
     public DegreeResponseDTO createDegree(DegreeCreateDTO degreeCreateDTO) {
-        Degree degree = new Degree();
+        DegreeEntity degree = new DegreeEntity();
         degree.setLevel(degreeCreateDTO.getLevel());
         // Set the university based on the university ID
         // degree.setUniversity(universityService.getUniversityById(degreeCreateDTO.getUniversityId()));
 
-        Degree savedDegree = degreeRepository.save(degree);
+        DegreeEntity savedDegree = degreeRepository.save(degree);
 
         return mapToResponseDTO(savedDegree);
     }
 
+    @Override
     public List<DegreeResponseDTO> getAllDegrees() {
         return degreeRepository.findAll().stream()
                 .map(this::mapToResponseDTO)
                 .collect(Collectors.toList());
     }
 
-    public DegreeResponseDTO getDegreeById(Long id) {
-        Degree degree = degreeRepository.findById(id).orElseThrow(() -> new RuntimeException("Degree not found"));
+    @Override
+    public DegreeResponseDTO getById(UUID id) {
+        DegreeEntity degree = degreeRepository.findById(id).orElseThrow(() -> new RuntimeException("Degree not found"));
         return mapToResponseDTO(degree);
     }
 
-    public DegreeResponseDTO updateDegree(Long id, DegreeCreateDTO degreeCreateDTO) {
-        Degree degree = degreeRepository.findById(id).orElseThrow(() -> new RuntimeException("Degree not found"));
+    @Override
+    public DegreeResponseDTO update(UUID id, DegreeCreateDTO degreeCreateDTO) {
+        DegreeEntity degree = degreeRepository.findById(id).orElseThrow(() -> new RuntimeException("Degree not found"));
 
         degree.setLevel(degreeCreateDTO.getLevel());
         // Set the university based on the university ID
         // degree.setUniversity(universityService.getUniversityById(degreeCreateDTO.getUniversityId()));
 
-        Degree updatedDegree = degreeRepository.save(degree);
+        DegreeEntity updatedDegree = degreeRepository.save(degree);
         return mapToResponseDTO(updatedDegree);
     }
 
-    public void deleteDegree(Long id) {
-        degreeRepository.deleteById(id);
+    @Override
+    public String delete(UUID id) {
+        int updatedRows = degreeRepository.deactivateDegreeById(id);
+        if (updatedRows > 0) {
+            return "Degree deactivated successfully.";
+        } else {
+            throw new DataNotFoundException("Degree not found with id: " + id);
+        }
+    }
+    @Override
+    public String activateDegree(UUID id) {
+        int updatedRows = degreeRepository.activateDegreeById(id);
+        if (updatedRows > 0) {
+            return "Degree activated successfully.";
+        } else {
+            throw new DataNotFoundException("Degree not found with id: " + id);
+        }
     }
 
-    private DegreeResponseDTO mapToResponseDTO(Degree degree) {
+    private DegreeResponseDTO mapToResponseDTO(DegreeEntity degree) {
         DegreeResponseDTO degreeResponseDTO = new DegreeResponseDTO();
         degreeResponseDTO.setId(degree.getId());
         degreeResponseDTO.setLevel(degree.getLevel());

@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import uz.work.worldcamp.entities.CityEntity;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface CityRepository extends JpaRepository<CityEntity , UUID> {
@@ -23,4 +24,7 @@ public interface CityRepository extends JpaRepository<CityEntity , UUID> {
     @Transactional
     @Query("UPDATE cityEntity c SET c.isActive = true WHERE c.id = :id")
     int activateCityById(@Param("id") UUID id);
+
+    Optional<CityEntity> findByName(String name);
+
 }

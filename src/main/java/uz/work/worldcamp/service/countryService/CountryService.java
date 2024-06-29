@@ -10,8 +10,6 @@ import java.util.UUID;
 public interface CountryService {
     CountryResponseDTO create(CountryCreateDTO dto);
     List<CountryResponseDTO> getAllCountries();
-    CountryResponseDTO getCountryById(UUID id);  /// manashu method kkmas menimcha . country id bn undagi univerlarni beradigan method kk
-
     CountryResponseDTO updateCountry(UUID id, CountryCreateDTO countryCreateDTO);
     String deleteCountry(UUID id);
 

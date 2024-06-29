@@ -21,8 +21,12 @@ public class FacultyEntity extends BaseEntity {
     private String contact;
     private String dekan;
     private Integer contract;
-    private Integer acceptanceKunduzgi;
-    private Integer acceptanceKechki;
+
+    @ElementCollection
+    private Map<String, Integer> acceptance;
+
+    @ElementCollection
+    private Map<String, String> management;
 
     @ElementCollection
     private List<String> level;

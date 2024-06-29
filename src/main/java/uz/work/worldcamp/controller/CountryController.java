@@ -8,7 +8,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.work.worldcamp.dtos.createDto.CountryCreateDTO;
 import uz.work.worldcamp.dtos.responceDto.CountryResponseDTO;
-import uz.work.worldcamp.dtos.responceDto.UniversityResponseDTO;
 import uz.work.worldcamp.service.countryService.CountryService;
 
 import java.util.List;
@@ -19,8 +18,6 @@ import java.util.UUID;
 @RequestMapping("/api/v1/country")
 public class CountryController {
     private final CountryService countryService;
-
-
 
     @Operation(
             description = "This method creates a new country",
@@ -46,17 +43,7 @@ public class CountryController {
         return ResponseEntity.ok(countries);
     }
 
-//    @Operation(
-//            description = "This method returns universities by country ID",
-//            method = "GET method is supported",
-//            security = @SecurityRequirement(name = "pre authorize", scopes = {"ADMIN", "USER"})
-//    )
-//    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
-//    @GetMapping("/{id}/universities")
-//    public ResponseEntity<List<UniversityResponseDTO>> getUniversitiesByCountryId(@PathVariable UUID id) {
-//        List<UniversityResponseDTO> universities = countryService.getUniversitiesByCountryId(id);
-//        return ResponseEntity.ok(universities);
-//    }
+
 
     @Operation(
             description = "This method updates a country by Long ID",
