@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface UniversityService {
-    UniversityResponseDTO createUniversity(UUID countryId, UUID cityId, UniversityCreateDTO dto);
+    UniversityResponseDTO createUniversity(UniversityCreateDTO dto);
     List<UniversityResponseDTO> getAllUniversities(UUID countryId, UUID cityId);
     UniversityResponseDTO getUniversityById(UUID id);
     UniversityResponseDTO updateUniversity(UUID id, UniversityCreateDTO dto);

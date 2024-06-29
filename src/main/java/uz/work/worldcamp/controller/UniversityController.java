@@ -2,6 +2,7 @@ package uz.work.worldcamp.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,19 +27,16 @@ public class UniversityController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/create")
     public ResponseEntity<UniversityResponseDTO> createUniversity(
-            @RequestParam UUID countryId,
-            @RequestParam UUID cityId,
             @RequestBody UniversityCreateDTO dto) {
-        UniversityResponseDTO createdUniversity = universityService.createUniversity(countryId, cityId, dto);
-        return ResponseEntity.ok(createdUniversity);
+
+        return ResponseEntity.ok(universityService.createUniversity(dto));
     }
 
     @Operation(
             description = "Get all universities for a specific country and city",
-            method = "GET method is supported",
-            security = @SecurityRequirement(name = "pre authorize", scopes = {"ADMIN"})
+            method = "GET method is supported"
     )
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PermitAll
     @GetMapping("/all")
     public ResponseEntity<List<UniversityResponseDTO>> getAllUniversities(
             @RequestParam UUID countryId,
@@ -49,10 +47,9 @@ public class UniversityController {
 
     @Operation(
             description = "Get a university by its UUID",
-            method = "GET method is supported",
-            security = @SecurityRequirement(name = "pre authorize", scopes = {"ADMIN"})
+            method = "GET method is supported"
     )
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PermitAll
     @GetMapping("/{id}")
     public ResponseEntity<UniversityResponseDTO> getUniversityById(@PathVariable UUID id) {
         UniversityResponseDTO university = universityService.getUniversityById(id);

@@ -33,11 +33,7 @@ public class CountryServiceImpl implements CountryService{
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public CountryResponseDTO getCountryById(UUID id) {
-        CountryEntity country = countryRepository.findById(id).orElseThrow(() -> new RuntimeException("Country not found"));
-        return mapToResponseDTO(country);
-    }
+
 
     @Override
     public CountryResponseDTO updateCountry(UUID id, CountryCreateDTO countryCreateDTO) {

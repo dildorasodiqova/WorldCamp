@@ -8,12 +8,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import uz.work.worldcamp.entities.CityEntity;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface CityRepository extends JpaRepository<CityEntity , UUID> {
 
-    @Cacheable("countryEntity")
     Boolean existsAllByNameIgnoreCase(String name);
     @Modifying
     @Transactional
@@ -26,5 +26,8 @@ public interface CityRepository extends JpaRepository<CityEntity , UUID> {
     int activateCityById(@Param("id") UUID id);
 
     Optional<CityEntity> findByName(String name);
+
+    @Cacheable
+    List<CityEntity> findByCountry_Id(UUID countryId);
 
 }

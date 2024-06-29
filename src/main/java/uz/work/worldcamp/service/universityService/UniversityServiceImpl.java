@@ -27,13 +27,13 @@ public class UniversityServiceImpl implements UniversityService{
 
     @Transactional
     @Override
-    public UniversityResponseDTO createUniversity(UUID countryId, UUID cityId, UniversityCreateDTO dto) {
-        Optional<UniversityEntity> existingUniversity = universityRepository.findByNameAndCountryIdAndCityId(dto.getName(), countryId, cityId);
+    public UniversityResponseDTO createUniversity(UniversityCreateDTO dto) {
+        Optional<UniversityEntity> existingUniversity = universityRepository.findByNameAndCountryIdAndCityId(dto.getName(), dto.getCountryId(), dto.getCityId());
         if (existingUniversity.isPresent()) {
             throw new IllegalArgumentException("University with this name already exists in the city and country.");
         }
 
-        UniversityEntity university = new UniversityEntity(dto.getName(), countryId, cityId);
+        UniversityEntity university = new UniversityEntity(dto.getName(), dto.getCountryId(), dto.getCityId());
         universityRepository.save(university);
         return convertToResponseDTO(university);
     }

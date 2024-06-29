@@ -2,6 +2,7 @@ package uz.work.worldcamp.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +38,8 @@ public class DegreeController {
             method = "GET method is supported",
             security = @SecurityRequirement(name = "pre authorize", scopes = {"ADMIN"})
     )
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/")
+    @PermitAll
+    @GetMapping("/getALL")
     public ResponseEntity<List<DegreeResponseDTO>> getAllDegrees() {
         List<DegreeResponseDTO> degrees = degreeService.getAllDegrees();
         return ResponseEntity.ok(degrees);

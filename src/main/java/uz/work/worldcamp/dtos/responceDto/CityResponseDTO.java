@@ -6,14 +6,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 public class CityResponseDTO {
-    private Long id;
+    private UUID id;
     private String name;
-    private CountryResponseDTO country;
-    private List<UniversityResponseDTO> universities;
+
 }

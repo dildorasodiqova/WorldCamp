@@ -2,6 +2,7 @@ package uz.work.worldcamp.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,11 +34,10 @@ public class CountryController {
 
     @Operation(
             description = "This method returns all countries",
-            method = "GET method is supported",
-            security = @SecurityRequirement(name = "pre authorize", scopes = {"ADMIN", "USER"})
+            method = "GET method is supported"
     )
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
-    @GetMapping
+    @PermitAll
+    @GetMapping("/getALl")
     public ResponseEntity<List<CountryResponseDTO>> getAllCountries() {
         List<CountryResponseDTO> countries = countryService.getAllCountries();
         return ResponseEntity.ok(countries);

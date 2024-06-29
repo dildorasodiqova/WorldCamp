@@ -39,26 +39,29 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
-    public CityResponseDTO getCityById(UUID id) {
-        CityEntity city = cityRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("City not found."));
-        return convertToResponseDTO(city);
+    public List<CityResponseDTO> getCitiesByCountryId(UUID countryId) {
+        List<CityEntity> cities = cityRepository.findByCountry_Id(countryId);
+        return cities.stream()
+                .map(cities::mapToResponse)
+                .collect(Collectors.toList());
     }
+
 
     @Override
     public CityResponseDTO updateCity(UUID id, CityCreateDTO dto) {
         CityEntity city = cityRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("City not found."));
-        if (!city.getName().equals(dto.getName())) {
-            Optional<CityEntity> existingCity = cityRepository.findByName(dto.getName());
-            if (existingCity.isPresent()) {
-                throw new IllegalArgumentException("City with this name already exists.");
-            }
-            city.setName(dto.getName());
+
+        Optional<CityEntity> existingCity = cityRepository.findByName(dto.getName());
+        if (existingCity.isPresent() && !existingCity.get().getId().equals(id)) {
+            throw new IllegalArgumentException("City with this name already exists.");
         }
+
+        city.setName(dto.getName());
         cityRepository.save(city);
         return convertToResponseDTO(city);
     }
+
 
     @Override
     public String deleteCity(UUID id) {

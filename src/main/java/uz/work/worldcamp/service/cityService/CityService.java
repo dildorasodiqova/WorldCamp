@@ -12,7 +12,7 @@ public interface CityService {
     String deleteCity(UUID id);
     String activateCity(UUID id);
     CityResponseDTO updateCity(UUID id, CityCreateDTO dto);
-    CityResponseDTO getCityById(UUID id);
+    List<CityResponseDTO> getCitiesByCountryId(UUID id);
     List<CityResponseDTO> getAllCities();
     CityResponseDTO createCity(CityCreateDTO dto);
 }

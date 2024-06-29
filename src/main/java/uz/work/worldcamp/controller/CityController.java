@@ -2,6 +2,7 @@ package uz.work.worldcamp.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,11 +38,10 @@ public class CityController {
             method = "GET method is supported",
             security = @SecurityRequirement(name = "pre authorize", scopes = {"ADMIN"})
     )
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     @GetMapping("/{id}")
-    public ResponseEntity<CityResponseDTO> getCityById(@PathVariable UUID id) {
-        CityResponseDTO city = cityService.getCityById(id);
-        return ResponseEntity.ok(city);
+    public ResponseEntity<List<CityResponseDTO>> getCitiesByCountryId(@PathVariable UUID countryId) {
+        return ResponseEntity.ok(cityService.getCitiesByCountryId(countryId));
     }
 
     @Operation(
@@ -85,8 +85,8 @@ public class CityController {
             method = "GET method is supported",
             security = @SecurityRequirement(name = "pre authorize", scopes = {"ADMIN"})
     )
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/")
+    @PermitAll
+    @GetMapping("/getAll")
     public ResponseEntity<List<CityResponseDTO>> getAllCities() {
         List<CityResponseDTO> cities = cityService.getAllCities();
         return ResponseEntity.ok(cities);
