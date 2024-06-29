@@ -65,7 +65,7 @@ public class CountryController {
     )
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/long/{id}")
-    public ResponseEntity<CountryResponseDTO> updateCountryByLongId(@PathVariable Long id, @RequestBody CountryCreateDTO dto) {
+    public ResponseEntity<CountryResponseDTO> updateCountryByLongId(@PathVariable UUID id, @RequestBody CountryCreateDTO dto) {
         CountryResponseDTO updatedCountry = countryService.updateCountry(id, dto);
         return ResponseEntity.ok(updatedCountry);
     }
