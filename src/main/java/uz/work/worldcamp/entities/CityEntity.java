@@ -20,6 +20,7 @@ public class CityEntity extends BaseEntity{
     @JoinColumn(name = "country_id")
     private CountryEntity country;
 
+
     @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<UniversityEntity> universities;
 
