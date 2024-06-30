@@ -16,10 +16,22 @@ import java.util.UUID;
 @Getter
 @Setter
 public class UniversityCreateDTO {
-    private String name;
-    private String shortName;
-    private String about;
-    private String history;
+    private String nameUz;
+    private String nameRus;
+    private String nameEng;
+
+    private String shortNameUz;
+    private String shortNameRus;
+    private String shortNameEng;
+
+    private String aboutUz;
+    private String aboutRus;
+    private String aboutEng;
+
+    private String historyUz;
+    private String historyRus;
+    private String historyEng;
+
     private String data;
     private String contact;
     private String license;
@@ -42,6 +54,7 @@ public class UniversityCreateDTO {
     private List<String> lang;
     private List<String> addition;
     private List<String> partner;
+
     private Location location;
     private Address address;
     private Contract contract;

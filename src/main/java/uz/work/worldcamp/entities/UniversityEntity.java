@@ -16,10 +16,23 @@ import java.util.UUID;
 @Setter
 @Entity(name = "universityEntity")
 public class UniversityEntity extends BaseEntity{
-    private String name;
-    private String shortName;
-    private String about;
-    private String history;
+    private String nameUz;
+    private String nameRus;
+    private String nameEng;
+
+    private String shortNameUz;
+    private String shortNameRus;
+    private String shortNameEng;
+
+    private String aboutUz;
+    private String aboutRus;
+    private String aboutEng;
+
+    private String historyUz;
+    private String historyRus;
+    private String historyEng;
+
+
     private String data;
     private String contact;
     private String license;
@@ -105,8 +118,10 @@ public class UniversityEntity extends BaseEntity{
     @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FacultyEntity> faculties;
 
-    public UniversityEntity(String name, UUID countryId, UUID cityId) {
-        this.name = name;
+    public UniversityEntity(String nameUz, String nameRus, String nameEng, UUID countryId, UUID cityId) {
+        this.nameUz = nameUz;
+        this.nameRus = nameRus;
+        this.nameEng = nameEng;
         this.countryId =  countryId;
         this.cityId = cityId;
     }

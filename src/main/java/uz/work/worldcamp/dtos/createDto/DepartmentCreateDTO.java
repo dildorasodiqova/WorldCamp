@@ -11,7 +11,10 @@ import java.util.UUID;
 @Getter
 @Setter
 public class DepartmentCreateDTO {
+    private String nameUz;
+    private String nameRus;
+    private String nameEng;
+
     private UUID facultyId;
-    private String name;
     private UUID universityId;
 }

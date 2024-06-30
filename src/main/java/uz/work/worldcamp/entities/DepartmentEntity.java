@@ -14,7 +14,10 @@ import lombok.Setter;
 @Setter
 @Entity(name = "departmentEntity")
 public class DepartmentEntity extends BaseEntity{
-    private String name;
+    private String nameUz;
+    private String nameRus;
+    private String nameEng;
+
 
     @ManyToOne
     @JoinColumn(name = "university_id")

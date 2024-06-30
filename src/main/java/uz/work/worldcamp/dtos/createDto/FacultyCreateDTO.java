@@ -13,7 +13,14 @@ import java.util.UUID;
 @Getter
 @Setter
 public class FacultyCreateDTO {
-    private String name;
+    private String nameUz;
+    private String nameRus;
+    private String nameEng;
+
+    private String aboutUz;
+    private String aboutRus;
+    private String aboutEng;
+
     private Map<String, String> management;
     private Map<String, String> images;
     private Map<String, String> videos;

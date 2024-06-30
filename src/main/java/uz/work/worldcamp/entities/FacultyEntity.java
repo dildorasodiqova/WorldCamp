@@ -15,9 +15,15 @@ import java.util.Map;
 @Setter
 @Entity(name = "facultyEntity")
 public class FacultyEntity extends BaseEntity {
-    private String name;
-    private String about;
-    private String data;
+    private String nameUz;
+    private String nameRus;
+    private String nameEng;
+
+    private String aboutUz;
+    private String aboutRus;
+    private String aboutEng;
+
+
     private String contact;
     private String dekan;
     private Integer contract;
