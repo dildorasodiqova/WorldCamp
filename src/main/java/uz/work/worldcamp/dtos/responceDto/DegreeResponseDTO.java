@@ -15,6 +15,6 @@ public class DegreeResponseDTO {
     private UUID id;
     private String level;
     private UniversityShortInfoDto university;
-    protected LocalDateTime createdDate;
-    protected LocalDateTime updateDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime updateDate;
 }

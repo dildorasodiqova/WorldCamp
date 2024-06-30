@@ -14,6 +14,6 @@ import java.util.UUID;
 public class UniversityShortInfoDto {
     private UUID id;
     private UUID name;
-    protected LocalDateTime createdDate;
-    protected LocalDateTime updateDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime updateDate;
 }

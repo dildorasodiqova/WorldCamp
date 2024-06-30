@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class CityInfoDto {
     private Long id;
     private String name;
-    protected LocalDateTime createdDate;
-    protected LocalDateTime updateDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime updateDate;
 
 }

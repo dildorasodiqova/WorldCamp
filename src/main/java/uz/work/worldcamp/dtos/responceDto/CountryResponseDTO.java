@@ -15,6 +15,6 @@ import java.util.UUID;
 public class CountryResponseDTO {
     private UUID id;
     private String name;
-    protected LocalDateTime createdDate;
-    protected LocalDateTime updateDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime updateDate;
 }

@@ -14,6 +14,6 @@ public class DepartmentResponseDTO {
     private Long id;
     private String name;
     private UniversityResponseDTO university;
-    protected LocalDateTime createdDate;
-    protected LocalDateTime updateDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime updateDate;
 }

@@ -51,6 +51,6 @@ public class UniversityResponseDTO {
     private UUID countryId;
     private UUID cityId;
     private List<FacultyResponseDTO> faculties;
-    protected LocalDateTime createdDate;
-    protected LocalDateTime updateDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime updateDate;
 }

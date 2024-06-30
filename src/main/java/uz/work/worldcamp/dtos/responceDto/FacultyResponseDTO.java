@@ -31,6 +31,6 @@ public class FacultyResponseDTO {
     private Map<String, Integer> acceptance;
     private List<String> addition;
     private UUID universityId;
-    protected LocalDateTime createdDate;
-    protected LocalDateTime updateDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime updateDate;
 }

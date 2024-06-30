@@ -16,6 +16,6 @@ public class UserResponseDTO {
     private UUID id;
     private String phoneNumber;
     private String email;
-    protected LocalDateTime createdDate;
-    protected LocalDateTime updateDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime updateDate;
 }
