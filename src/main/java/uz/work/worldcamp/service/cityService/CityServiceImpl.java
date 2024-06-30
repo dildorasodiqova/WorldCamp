@@ -4,12 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import uz.work.worldcamp.dtos.createDto.CityCreateDTO;
 import uz.work.worldcamp.dtos.responceDto.CityResponseDTO;
+import uz.work.worldcamp.dtos.responceDto.FacultyResponseDTO;
 import uz.work.worldcamp.entities.CityEntity;
 import uz.work.worldcamp.entities.CountryEntity;
+import uz.work.worldcamp.entities.FacultyEntity;
 import uz.work.worldcamp.exception.DataNotFoundException;
 import uz.work.worldcamp.repositories.CityRepository;
 import uz.work.worldcamp.service.countryService.CountryService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -40,9 +43,8 @@ public class CityServiceImpl implements CityService {
 
     @Override
     public List<CityResponseDTO> getCitiesByCountryId(UUID countryId) {
-        List<CityEntity> cities = cityRepository.findByCountry_Id(countryId);
-        return cities.stream()
-                .map(cities::mapToResponse)
+        return cityRepository.findByCountry_Id(countryId).stream()
+                .map(city -> new CityResponseDTO(city.getId(), city.getName()))
                 .collect(Collectors.toList());
     }
 
@@ -50,7 +52,7 @@ public class CityServiceImpl implements CityService {
     @Override
     public CityResponseDTO updateCity(UUID id, CityCreateDTO dto) {
         CityEntity city = cityRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("City not found."));
+                .orElseThrow(() -> new DataNotFoundException("City not found."));
 
         Optional<CityEntity> existingCity = cityRepository.findByName(dto.getName());
         if (existingCity.isPresent() && !existingCity.get().getId().equals(id)) {
@@ -85,6 +87,7 @@ public class CityServiceImpl implements CityService {
     private CityResponseDTO convertToResponseDTO(CityEntity city) {
         return new CityResponseDTO(city.getId(), city.getName());
     }
+
 
     @Override
     public CityEntity getById(UUID cityId) {

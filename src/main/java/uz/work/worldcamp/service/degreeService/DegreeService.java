@@ -9,7 +9,7 @@ import java.util.UUID;
 public interface DegreeService {
     DegreeResponseDTO createDegree(DegreeCreateDTO degreeCreateDTO);
     List<DegreeResponseDTO> getAllDegrees();
-    DegreeResponseDTO update(UUID id, DegreeCreateDTO degreeCreateDTO);
+    String update(UUID id, DegreeCreateDTO degreeCreateDTO);
     DegreeResponseDTO getById(UUID id);
     String delete(UUID id);
     String activateDegree(UUID id);

@@ -2,8 +2,10 @@ package uz.work.worldcamp.service.degreeService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uz.work.worldcamp.dtos.createDto.DegreeCreateDTO;
 import uz.work.worldcamp.dtos.responceDto.DegreeResponseDTO;
+import uz.work.worldcamp.dtos.responceDto.UniversityShortInfoDto;
 import uz.work.worldcamp.entities.DegreeEntity;
 import uz.work.worldcamp.exception.DataNotFoundException;
 import uz.work.worldcamp.repositories.DegreeRepository;
@@ -14,8 +16,9 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class DegreeServiceImpl implements DegreeService{
+public class DegreeServiceImpl implements DegreeService {
     private final DegreeRepository degreeRepository;
+
     @Override
     public DegreeResponseDTO createDegree(DegreeCreateDTO degreeCreateDTO) {
         DegreeEntity degree = new DegreeEntity();
@@ -41,16 +44,13 @@ public class DegreeServiceImpl implements DegreeService{
         return mapToResponseDTO(degree);
     }
 
+    @Transactional
     @Override
-    public DegreeResponseDTO update(UUID id, DegreeCreateDTO degreeCreateDTO) {
-        DegreeEntity degree = degreeRepository.findById(id).orElseThrow(() -> new RuntimeException("Degree not found"));
-
-        degree.setLevel(degreeCreateDTO.getLevel());
-        // Set the university based on the university ID
-        // degree.setUniversity(universityService.getUniversityById(degreeCreateDTO.getUniversityId()));
-
-        DegreeEntity updatedDegree = degreeRepository.save(degree);
-        return mapToResponseDTO(updatedDegree);
+    public String update(UUID id, DegreeCreateDTO degree) {
+        if (degreeRepository.updateDegree(id, degree.getLevel(), degree.getUniversityId()) == 0) {
+            throw new DataNotFoundException("Degree with id " + id + " not found");
+        }
+        return "Successfully degree updated .";
     }
 
     @Override
@@ -62,6 +62,7 @@ public class DegreeServiceImpl implements DegreeService{
             throw new DataNotFoundException("Degree not found with id: " + id);
         }
     }
+
     @Override
     public String activateDegree(UUID id) {
         int updatedRows = degreeRepository.activateDegreeById(id);
@@ -73,10 +74,6 @@ public class DegreeServiceImpl implements DegreeService{
     }
 
     private DegreeResponseDTO mapToResponseDTO(DegreeEntity degree) {
-        DegreeResponseDTO degreeResponseDTO = new DegreeResponseDTO();
-        degreeResponseDTO.setId(degree.getId());
-        degreeResponseDTO.setLevel(degree.getLevel());
-        // Set other fields as needed
-        return degreeResponseDTO;
+        return new DegreeResponseDTO(degree.getId(), degree.getLevel(), new UniversityShortInfoDto());
     }
 }

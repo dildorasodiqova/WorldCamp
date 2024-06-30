@@ -11,6 +11,11 @@ import java.util.UUID;
 
 public interface DegreeRepository extends JpaRepository<DegreeEntity, UUID> {
 
+
+    @Modifying
+    @Query("UPDATE degreeEntity d SET d.level = :level, d.university.id = :universityId WHERE d.id = :id")
+    int updateDegree(@Param("id") UUID id, @Param("level") String level, @Param("universityId") UUID universityId);
+
     @Modifying
     @Transactional
     @Query("UPDATE degreeEntity c SET c.isActive = false WHERE c.id = :id")

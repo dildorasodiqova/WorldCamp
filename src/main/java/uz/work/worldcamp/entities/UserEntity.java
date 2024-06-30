@@ -1,6 +1,8 @@
 package uz.work.worldcamp.entities;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import uz.work.worldcamp.enums.UserRole;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -19,15 +22,22 @@ import java.util.Set;
 @Setter
 @Entity(name = "userEntity")
 public class UserEntity extends BaseEntity implements UserDetails {
-    private String phoneNumber;
+    private String fullName;
     private String email;
     private String password;
+    private String avatar;
+    private String educationLevel;
+    private boolean isAbuturient;
+    private boolean isEmailVerified;
+
+    @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Set.of(new SimpleGrantedAuthority(userRole.name()));
+        return List.of(new SimpleGrantedAuthority(userRole.name()));
     }
+
     @Override
     public String getUsername() {
         return email;
@@ -48,10 +58,9 @@ public class UserEntity extends BaseEntity implements UserDetails {
         return true;
     }
 
-
     @Override
     public boolean isEnabled() {
-        return super.isActive;
+        return isEmailVerified;
     }
 
 

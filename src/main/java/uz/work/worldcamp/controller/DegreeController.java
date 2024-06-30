@@ -41,8 +41,7 @@ public class DegreeController {
     @PermitAll
     @GetMapping("/getALL")
     public ResponseEntity<List<DegreeResponseDTO>> getAllDegrees() {
-        List<DegreeResponseDTO> degrees = degreeService.getAllDegrees();
-        return ResponseEntity.ok(degrees);
+        return ResponseEntity.ok(degreeService.getAllDegrees());
     }
 
     @Operation(
@@ -52,9 +51,8 @@ public class DegreeController {
     )
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<DegreeResponseDTO> updateDegree(@PathVariable UUID id, @RequestBody DegreeCreateDTO degreeCreateDTO) {
-        DegreeResponseDTO updatedDegree = degreeService.update(id, degreeCreateDTO);
-        return ResponseEntity.ok(updatedDegree);
+    public ResponseEntity<String> updateDegree(@PathVariable UUID id, @RequestBody DegreeCreateDTO degreeCreateDTO) {
+        return ResponseEntity.ok( degreeService.update(id, degreeCreateDTO));
     }
 
     @Operation(
@@ -65,8 +63,7 @@ public class DegreeController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<DegreeResponseDTO> getDegreeById(@PathVariable UUID id) {
-        DegreeResponseDTO degree = degreeService.getById(id);
-        return ResponseEntity.ok(degree);
+        return ResponseEntity.ok(degreeService.getById(id));
     }
 
     @Operation(
@@ -77,8 +74,7 @@ public class DegreeController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteDegree(@PathVariable UUID id) {
-        String message = degreeService.delete(id);
-        return ResponseEntity.ok(message);
+        return ResponseEntity.ok( degreeService.delete(id));
     }
 
     @Operation(
@@ -89,8 +85,7 @@ public class DegreeController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/activate/{id}")
     public ResponseEntity<String> activateDegree(@PathVariable UUID id) {
-        String message = degreeService.activateDegree(id);
-        return ResponseEntity.ok(message);
+        return ResponseEntity.ok(degreeService.activateDegree(id));
     }
 }
 
