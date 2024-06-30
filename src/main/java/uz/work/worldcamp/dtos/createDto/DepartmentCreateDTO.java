@@ -17,4 +17,5 @@ public class DepartmentCreateDTO {
 
     private UUID facultyId;
     private UUID universityId;
+
 }
