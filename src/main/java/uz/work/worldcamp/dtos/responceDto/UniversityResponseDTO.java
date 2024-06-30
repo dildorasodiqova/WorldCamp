@@ -8,6 +8,7 @@ import uz.work.worldcamp.entities.Address;
 import uz.work.worldcamp.entities.Contract;
 import uz.work.worldcamp.entities.Location;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -19,14 +20,16 @@ import java.util.UUID;
 public class UniversityResponseDTO {
     private UUID id;
     private String name;
+    private String shortName;
     private String about;
     private String history;
     private String data;
     private String contact;
     private String license;
-    private int students;
-    private int eduCount;
-    private int worldRating;
+    private Integer students;
+    private Integer eduCount;
+    private Integer worldRating;
+    private Integer anotherRating;
     private List<String> achievements;
     private Map<String, String> management;
     private Map<String, String> images;
@@ -48,4 +51,6 @@ public class UniversityResponseDTO {
     private UUID countryId;
     private UUID cityId;
     private List<FacultyResponseDTO> faculties;
+    protected LocalDateTime createdDate;
+    protected LocalDateTime updateDate;
 }

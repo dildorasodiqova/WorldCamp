@@ -5,16 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class CityInfoDto {
-    private Long id;
-    private String name;
-    protected LocalDateTime createdDate;
-    protected LocalDateTime updateDate;
-
+public class JwtResponse {
+    private String accessToken;
+    private String refreshToken;
 }
+
+
+
+

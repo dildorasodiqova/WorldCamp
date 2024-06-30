@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.work.worldcamp.dtos.createDto.ForgetDto;
+import uz.work.worldcamp.dtos.responceDto.UserResponseDTO;
 import uz.work.worldcamp.service.userService.UserService;
 
 import java.security.Principal;
@@ -59,7 +60,7 @@ public class AuthController {
     )
     @PermitAll
     @PostMapping("/verify")
-    public UserResponseDto verify(@RequestBody VerifyDto verifyDto) {
+    public UserResponseDTO verify(@RequestBody VerifyDto verifyDto) {
         return userService.verify(verifyDto);
     }
 

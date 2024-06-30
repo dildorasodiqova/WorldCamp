@@ -17,14 +17,16 @@ import java.util.UUID;
 @Setter
 public class UniversityCreateDTO {
     private String name;
+    private String shortName;
     private String about;
     private String history;
     private String data;
     private String contact;
     private String license;
-    private int students;
-    private int eduCount;
-    private int worldRating;
+    private Integer students;
+    private Integer eduCount;
+    private Integer worldRating;
+    private Integer anotherRating;
     private List<String> achievements;
     private Map<String, String> management;
     private Map<String, String> images;

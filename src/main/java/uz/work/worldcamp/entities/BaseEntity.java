@@ -40,3 +40,4 @@ public class BaseEntity {
 
     protected Boolean isActive = true;
 }
+

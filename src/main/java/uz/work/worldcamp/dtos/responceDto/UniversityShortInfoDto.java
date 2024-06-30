@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,4 +14,6 @@ import java.util.UUID;
 public class UniversityShortInfoDto {
     private UUID id;
     private UUID name;
+    protected LocalDateTime createdDate;
+    protected LocalDateTime updateDate;
 }

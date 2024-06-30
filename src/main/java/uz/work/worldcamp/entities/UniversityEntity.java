@@ -17,14 +17,22 @@ import java.util.UUID;
 @Entity(name = "universityEntity")
 public class UniversityEntity extends BaseEntity{
     private String name;
+    private String shortName;
     private String about;
     private String history;
     private String data;
     private String contact;
     private String license;
-    private int students;
-    private int eduCount;
-    private int worldRating;
+    private Integer students;
+    private Integer worldRating;
+    private Integer anotherRating;
+
+    @ElementCollection
+    private List<String> eduForm; ///“Kunduzgi”, “Kechki”, “Sirtqi”
+
+
+    @ElementCollection
+    private List<String> eduDirection;
 
     @ElementCollection
     private List<String> achievements;
@@ -51,7 +59,7 @@ public class UniversityEntity extends BaseEntity{
     private Map<String, String> socials;
 
     @ElementCollection
-    private List<String> exam;
+    private List<String> examDate;
 
     @ElementCollection
     private List<String> scholarships;
