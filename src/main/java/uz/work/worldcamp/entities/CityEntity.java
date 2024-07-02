@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.UUID;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -15,9 +17,11 @@ import java.util.List;
 public class CityEntity extends BaseEntity{
     private String name;
 
+    @Column(name = "country_id")
+    private UUID countryId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "country_id")
+    @JoinColumn(name = "country_id", insertable = false, updatable = false)
     private CountryEntity country;
 
 
@@ -25,8 +29,8 @@ public class CityEntity extends BaseEntity{
     private List<UniversityEntity> universities;
 
 
-    public CityEntity(String name, CountryEntity country) {
+    public CityEntity(String name, UUID countryId) {
         this.name = name;
-        this.country = country;
+        this.countryId = countryId;
     }
 }

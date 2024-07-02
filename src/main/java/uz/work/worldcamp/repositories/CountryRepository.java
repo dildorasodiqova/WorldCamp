@@ -14,9 +14,8 @@ public interface CountryRepository extends JpaRepository<CountryEntity, UUID> {
     @Cacheable("countryEntity")
     Boolean existsAllByNameIgnoreCase(String name);
 
-    @Query("SELECT COUNT(c) > 0 FROM countryEntity c WHERE c.id != :id AND c.name = :name")
+    @Query("SELECT COUNT(c) > 0 FROM countryEntity c WHERE c.id != :id AND LOWER(c.name) = LOWER(:name)")
     boolean existsByIdNotAndName(@Param("id") UUID id, @Param("name") String name);
-
 
     @Modifying
     @Transactional

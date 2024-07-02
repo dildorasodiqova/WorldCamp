@@ -14,6 +14,7 @@ import java.util.UUID;
 public class FacultyCommentCreateDto {
     private UUID userId;
     private UUID facultyId;
+    private UUID parentId;
     private String comment;
 
 

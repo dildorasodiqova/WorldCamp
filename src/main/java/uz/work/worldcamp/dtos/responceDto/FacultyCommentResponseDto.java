@@ -15,6 +15,7 @@ public class FacultyCommentResponseDto {
     private UUID id;
     private UserShortInfo userId;
     private FacultyShortInfo facultyId;
+    private UUID parentId;
     private String comment;
     private LocalDateTime createdDate;
     private LocalDateTime updateDate;

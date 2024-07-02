@@ -12,9 +12,12 @@ import java.util.UUID;
 public interface DegreeRepository extends JpaRepository<DegreeEntity, UUID> {
 
 
+    @Query("SELECT CASE WHEN COUNT(d) > 0 THEN TRUE ELSE FALSE END FROM degreeEntity d WHERE d.levelEng = :levelEng OR d.levelUz = :levelUz OR d.levelRus = :levelRus")
+    boolean existsByLevel(@Param("levelEng") String levelEng, @Param("levelUz") String levelUz, @Param("levelRus") String levelRus);
     @Modifying
-    @Query("UPDATE degreeEntity d SET d.level = :level, d.university.id = :universityId WHERE d.id = :id")
-    int updateDegree(@Param("id") UUID id, @Param("level") String level, @Param("universityId") UUID universityId);
+    @Query("UPDATE degreeEntity d SET d.levelEng = :levelEng, d.levelUz = :levelUz, d.levelRus = :levelRus, d.university.id = :universityId WHERE d.id = :id")
+    int updateDegree(@Param("id") UUID id, @Param("levelEng") String levelEng, @Param("levelUz") String levelUz, @Param("levelRus") String levelRus, @Param("universityId") UUID universityId);
+
 
     @Modifying
     @Transactional

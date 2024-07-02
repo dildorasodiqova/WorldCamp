@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -58,7 +59,10 @@ public class FacultyEntity extends BaseEntity {
     @ElementCollection
     private Map<String, String> videos;
 
+    @Column(name = "university_id")
+    private UUID universityId;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "university_id")
+    @JoinColumn(name = "university_id", insertable = false, updatable = false)
     private UniversityEntity university;
 }

@@ -11,6 +11,9 @@ import java.util.UUID;
 @Getter
 @Setter
 public class DegreeCreateDTO {
-    private String level;  /// bakalavr/ magistratura / aspirantura
+    private String levelUz;/// bakalavr/ magistratura / aspirantura
+    private String levelRus;
+    private String levelEng;
+
     private UUID universityId;
 }

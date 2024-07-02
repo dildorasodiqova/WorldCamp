@@ -37,6 +37,7 @@ public class UniversityEntity extends BaseEntity{
     private String contact;
     private String license;
     private Integer students;
+    private Integer eduCount;
     private Integer worldRating;
     private Integer anotherRating;
 

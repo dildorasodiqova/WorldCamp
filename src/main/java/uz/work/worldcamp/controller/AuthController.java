@@ -9,6 +9,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.work.worldcamp.dtos.createDto.ForgetDto;
+import uz.work.worldcamp.dtos.createDto.LoginDto;
+import uz.work.worldcamp.dtos.createDto.UserCreateDTO;
+import uz.work.worldcamp.dtos.createDto.VerifyDto;
+import uz.work.worldcamp.dtos.responceDto.JwtResponse;
 import uz.work.worldcamp.dtos.responceDto.UserResponseDTO;
 import uz.work.worldcamp.service.userService.UserService;
 
@@ -16,7 +20,7 @@ import java.security.Principal;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 @Tag( name = "Auth Management")
 @SecurityRequirement( name = "Bearer Authentication")
@@ -24,7 +28,6 @@ public class AuthController {
     private final UserService userService;
 
 
-    // api to get new access token with refresh token
     @PostMapping("/access-token")
     public String getAccessToken(@RequestBody String refreshToken, Principal principal) {
         return userService.getAccessToken(refreshToken, UUID.fromString(principal.getName()));
@@ -37,14 +40,14 @@ public class AuthController {
 
     @PermitAll
     @PostMapping("/sign-up")
-    public UserResponseDto signUp(@Valid @RequestBody SignUpDto dto) {
+    public UserResponseDTO signUp(@Valid @RequestBody UserCreateDTO dto) {
         return userService.signUp(dto);
     }
 
     @PermitAll
     @PostMapping("/sign-in")
-    public JwtResponse signIn(@RequestBody VerifyDtoP verifyDtoP) {
-        return userService.signIn(verifyDtoP);
+    public JwtResponse signIn(@RequestBody LoginDto loginDto) {
+        return userService.signIn(loginDto);
     }
 
     @PermitAll
@@ -64,10 +67,6 @@ public class AuthController {
         return userService.verify(verifyDto);
     }
 
-    @PermitAll
-    @GetMapping("/verify-token")
-    public SubjectDto verifyToken (@RequestBody String token) {
-        return userService.verifyToken(token);
-    }
+
 
 }

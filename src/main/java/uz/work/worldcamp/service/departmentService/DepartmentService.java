@@ -10,5 +10,7 @@ public interface DepartmentService {
     DepartmentResponseDTO createDepartment(DepartmentCreateDTO departmentCreateDTO);
     List<DepartmentResponseDTO> getAllDepartments();
     DepartmentResponseDTO getDepartmentById(UUID id);
-    DepartmentResponseDTO updateDepartment(UUID id, DepartmentCreateDTO departmentCreateDTO);
+    String delete(UUID id);
+    String activateDepartment(UUID id);
+    String updateDepartment(UUID id, DepartmentCreateDTO departmentCreateDTO);
 }

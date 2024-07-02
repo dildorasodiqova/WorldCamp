@@ -20,17 +20,13 @@ public class DegreeServiceImpl implements DegreeService {
     private final DegreeRepository degreeRepository;
 
     @Override
-    public DegreeResponseDTO createDegree(DegreeCreateDTO degreeCreateDTO) {
-        DegreeEntity degree = new DegreeEntity();
-        degree.setLevel(degreeCreateDTO.getLevel());
-        // Set the university based on the university ID
-        // degree.setUniversity(universityService.getUniversityById(degreeCreateDTO.getUniversityId()));
-
-        DegreeEntity savedDegree = degreeRepository.save(degree);
-
+    public DegreeResponseDTO createDegree(DegreeCreateDTO degree) {
+        if (degreeRepository.existsByLevel(degree.getLevelEng(), degree.getLevelUz(), degree.getLevelRus())) {
+            throw new RuntimeException("This degree level already exists");
+        }
+        DegreeEntity savedDegree = degreeRepository.save(new DegreeEntity(degree.getLevelUz(), degree.getLevelRus(), degree.getLevelEng(), degree.getUniversityId()));
         return mapToResponseDTO(savedDegree);
     }
-
     @Override
     public List<DegreeResponseDTO> getAllDegrees() {
         return degreeRepository.findAll().stream()
@@ -47,8 +43,9 @@ public class DegreeServiceImpl implements DegreeService {
     @Transactional
     @Override
     public String update(UUID id, DegreeCreateDTO degree) {
-        if (degreeRepository.updateDegree(id, degree.getLevel(), degree.getUniversityId()) == 0) {
-            throw new DataNotFoundException("Degree with id " + id + " not found");
+        int updatedRows = degreeRepository.updateDegree(id, degree.getLevelEng(), degree.getLevelUz(),degree.getLevelRus(), degree.getUniversityId() );
+        if (updatedRows == 0) {
+            throw new RuntimeException("Degree update failed");
         }
         return "Successfully degree updated .";
     }
@@ -74,6 +71,12 @@ public class DegreeServiceImpl implements DegreeService {
     }
 
     private DegreeResponseDTO mapToResponseDTO(DegreeEntity degree) {
-        return new DegreeResponseDTO(degree.getId(), degree.getLevel(), new UniversityShortInfoDto());
+        return new DegreeResponseDTO(
+                degree.getId(),
+                degree.getLevel(),
+                new UniversityShortInfoDto(
+                        degree.getUniversity().getId(),
+                        degree.getUniversity().ge
+                        ));
     }
 }

@@ -22,14 +22,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CityServiceImpl implements CityService {
     private final CityRepository cityRepository;
-    private final CountryService countryService;
     @Override
     public CityResponseDTO createCity(CityCreateDTO dto) {
          if (cityRepository.existsAllByNameIgnoreCase(dto.getName())) {
             throw new IllegalArgumentException("City with this name already exists.");
         }
-        CountryEntity country = countryService.getById(dto.getCountryId());
-        CityEntity city = new CityEntity(dto.getName(),country );
+         CityEntity city = new CityEntity(dto.getName(),dto.getCountryId() );
         cityRepository.save(city);
         return convertToResponseDTO(city);
     }
@@ -44,7 +42,7 @@ public class CityServiceImpl implements CityService {
     @Override
     public List<CityResponseDTO> getCitiesByCountryId(UUID countryId) {
         return cityRepository.findByCountry_Id(countryId).stream()
-                .map(city -> new CityResponseDTO(city.getId(), city.getName()))
+                .map(city -> new CityResponseDTO(city.getId(), city.getName(), city.getCreatedDate(), city.getUpdateDate()))
                 .collect(Collectors.toList());
     }
 
@@ -85,7 +83,7 @@ public class CityServiceImpl implements CityService {
     }
 
     private CityResponseDTO convertToResponseDTO(CityEntity city) {
-        return new CityResponseDTO(city.getId(), city.getName());
+        return new CityResponseDTO(city.getId(), city.getName(), city.getCreatedDate(), city.getUpdateDate());
     }
 
 

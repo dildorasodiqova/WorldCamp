@@ -27,7 +27,7 @@ public class UniversityResponseDTO {
     private String contact;
     private String license;
     private Integer students;
-    private Integer eduCount;
+    private Integer eduCount;/// ta'lim yo'nalishlarining umumiy soni
     private Integer worldRating;
     private Integer anotherRating;
     private List<String> achievements;

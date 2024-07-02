@@ -54,7 +54,6 @@ public class UniversityCreateDTO {
     private List<String> lang;
     private List<String> addition;
     private List<String> partner;
-
     private Location location;
     private Address address;
     private Contract contract;

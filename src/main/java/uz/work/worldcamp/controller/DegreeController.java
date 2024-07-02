@@ -17,7 +17,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/degrees")
+@RequestMapping("/api/v1/degrees")
 public class DegreeController {
     private final DegreeService degreeService;
 

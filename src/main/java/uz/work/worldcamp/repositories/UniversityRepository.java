@@ -12,7 +12,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UniversityRepository extends JpaRepository<UniversityEntity, UUID> {
-    Optional<UniversityEntity> findByNameAndCountryIdAndCityId(String name, UUID countryId, UUID cityId);
+    @Query("SELECT u FROM universityEntity u WHERE LOWER(u.nameEng) = LOWER(:nameEng) or LOWER(u.nameUz) = LOWER(:nameUz) or LOWER(u.nameRus) = LOWER(:nameRus)")
+    Optional<UniversityEntity> findByName(@Param("nameEng") String nameEng, @Param("nameUz") String nameUz, @Param("nameRus") String nameRus);
+
     List<UniversityEntity> findByCountryIdAndCityId(UUID countryId, UUID cityId);
     @Modifying
     @Transactional

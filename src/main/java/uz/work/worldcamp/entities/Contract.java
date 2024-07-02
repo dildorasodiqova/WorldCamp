@@ -12,9 +12,9 @@ import lombok.Setter;
 @Setter
 @Embeddable
 public class Contract {
-    private int highestAmount;
-    private int averageAmount;
-    private int minimumAmount;
+    private Integer highestAmount;
+    private Integer averageAmount;
+    private Integer minimumAmount;
     private String currency;
 
 }

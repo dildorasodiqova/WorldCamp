@@ -29,14 +29,21 @@ public class FacultyCommentEntity extends BaseEntity{
     @JoinColumn(name = "faculty_id", insertable = false, updatable = false)
     private FacultyEntity facultyEntity;
 
+    @Column(name = "parent_id")
+    private UUID parentId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id", insertable = false, updatable = false)
+    private FacultyCommentEntity facultyComment; ///bu parent
 
     @Column(columnDefinition = "text")
     private String comment;
 
 
-    public FacultyCommentEntity(UUID userId, UUID facultyId, String comment) {
+    public FacultyCommentEntity(UUID userId, UUID facultyId,UUID parentId, String comment) {
         this.userId = userId;
         this.facultyId =  facultyId;
+        this.parentId = parentId;
         this.comment = comment;
     }
 

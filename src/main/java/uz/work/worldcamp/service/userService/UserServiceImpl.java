@@ -6,13 +6,22 @@ import io.jsonwebtoken.Jws;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import uz.work.worldcamp.dtos.createDto.LoginDto;
+import uz.work.worldcamp.dtos.createDto.MailDto;
 import uz.work.worldcamp.dtos.createDto.UserCreateDTO;
+import uz.work.worldcamp.dtos.createDto.VerifyDto;
+import uz.work.worldcamp.dtos.responceDto.JwtResponse;
 import uz.work.worldcamp.dtos.responceDto.UserResponseDTO;
 import uz.work.worldcamp.entities.UserEntity;
 import uz.work.worldcamp.entities.UserPassword;
 import uz.work.worldcamp.exception.DataNotFoundException;
+import uz.work.worldcamp.repositories.PasswordRepository;
 import uz.work.worldcamp.repositories.UserRepository;
+import uz.work.worldcamp.service.MailService;
+import uz.work.worldcamp.service.PasswordService;
+import uz.work.worldcamp.service.jwt.JwtService;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -24,9 +33,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserServiceImpl  implements UserService{
     private final UserRepository userRepository;
-
+    private final MailService mailService;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
     private final PasswordRepository passwordRepository;
-    public UserResponseDTO createUser(UserCreateDTO userCreateDTO) {
+
+    @Override
+    public UserResponseDTO signUp(UserCreateDTO userCreateDTO) {
         UserEntity user = new UserEntity();
         user.setPhoneNumber(userCreateDTO.getPhoneNumber());
         user.setEmail(userCreateDTO.getEmail());
@@ -36,22 +49,38 @@ public class UserServiceImpl  implements UserService{
 
         return mapToResponseDTO(savedUser);
     }
+    @Override
+    public JwtResponse signIn(LoginDto loginDto) {
+        UserEntity userEntity = userRepository.findByEmail(loginDto.getEmail())
+                .orElseThrow(() -> new DataNotFoundException("User not found with email: " + loginDto.getEmail()));
+        if(userEntity.getIsActive()) {
+            if(passwordEncoder.matches(loginDto.getPassword(), userEntity.getPassword())) {
+                return new JwtResponse(jwtService.generateAccessToken(userEntity), jwtService.generateRefreshToken(userEntity));
+            }
+            throw new AuthenticationCredentialsNotFoundException("Password didn't match");
+        }
+        throw new AuthenticationCredentialsNotFoundException("Not verified");
+    }
 
+    @Override
     public List<UserResponseDTO> getAllUsers() {
-        return userRepository.findAll().stream()
+        return userRepository.findAllByIsActiveTrue().stream()
                 .map(this::mapToResponseDTO)
                 .collect(Collectors.toList());
     }
 
-    public UserResponseDTO getUserById(UUID id) {
+    @Override
+    public UserResponseDTO getById(UUID id) {
         UserEntity user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
         return mapToResponseDTO(user);
     }
 
+    @Override
     public UserResponseDTO updateUser(UUID id, UserCreateDTO userCreateDTO) {
         UserEntity user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
 
-        user.setPhoneNumber(userCreateDTO.getPhoneNumber());
+        user.setAvatar(userCreateDTO.getAvatar());
+        user.setFullName(userCreateDTO.getFullName());
         user.setEmail(userCreateDTO.getEmail());
         user.setPassword(userCreateDTO.getPassword());
 
@@ -59,8 +88,13 @@ public class UserServiceImpl  implements UserService{
         return mapToResponseDTO(updatedUser);
     }
 
-    public void deleteUser(UUID id) {
-        userRepository.deleteById(id);
+
+    @Override
+    public String getVerificationCode(String email) {
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new DataNotFoundException("User not found with email: " + email));
+        emailSend(user);
+        return "Verify code sent";
     }
 
     @Override
@@ -75,13 +109,7 @@ public class UserServiceImpl  implements UserService{
         passwordRepository.save(new UserPassword(generatedString,userEntity, LocalDateTime.now(),3));
     }
 
-    @Override
-    public String getVerificationCode(String email) {
-        UserEntity user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new DataNotFoundException("User not found with email: " + email));
-        emailSend(user);
-        return "Verify code sent";
-    }
+
 
     @Override
     public UserResponseDTO verify(VerifyDto verifyDto) {
@@ -99,19 +127,7 @@ public class UserServiceImpl  implements UserService{
         }
         throw new AuthenticationCredentialsNotFoundException("Code is expired");
     }
-    @Override
-    public SubjectDto verifyToken(String token) {
-        try{
-            Jws<Claims> claimsJws = jwtService.extractToken(token);
-            Claims claims = claimsJws.getBody();
-            String subject = claims.getSubject();
-            List<String> roles = (List<String>) claims.get("roles");
-            return new SubjectDto(UUID.fromString(subject),roles);
-        }catch (ExpiredJwtException e){
-            throw new AuthenticationCredentialsNotFoundException("Token expired");
-        }
 
-    }
 
     private UserResponseDTO mapToResponseDTO(UserEntity user) {
         UserResponseDTO userResponseDTO = new UserResponseDTO();

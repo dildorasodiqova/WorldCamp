@@ -28,14 +28,12 @@ public class UniversityServiceImpl implements UniversityService{
     @Transactional
     @Override
     public UniversityResponseDTO createUniversity(UniversityCreateDTO dto) {
-        Optional<UniversityEntity> existingUniversity = universityRepository.findByNameAndCountryIdAndCityId(dto.getName(), dto.getCountryId(), dto.getCityId());
+        Optional<UniversityEntity> existingUniversity = universityRepository.findByName(dto.getNameEng(),dto.getNameUz(), dto.getNameRus());
         if (existingUniversity.isPresent()) {
             throw new IllegalArgumentException("University with this name already exists in the city and country.");
         }
-
-        UniversityEntity university = new UniversityEntity(dto.getName(), dto.getCountryId(), dto.getCityId());
-        universityRepository.save(university);
-        return convertToResponseDTO(university);
+        UniversityEntity save = universityRepository.save(new UniversityEntity(dto.getNameUz(), dto.getNameRus(), dto.getNameEng(), dto.getCountryId(), dto.getCityId()));
+        return convertToResponseDTO(save);
     }
 
     @Override
@@ -91,6 +89,7 @@ public class UniversityServiceImpl implements UniversityService{
         return new UniversityResponseDTO(
                 u.getId(),
                 u.getName(),
+                u.getshortname(),
                 u.getAbout(),
                 u.getHistory(),
                 u.getData(),
@@ -107,7 +106,7 @@ public class UniversityServiceImpl implements UniversityService{
                 u.getRequirements(),
                 u.getDocument(),
                 u.getSocials(),
-                u.getExam(),
+                u.getExamDate(),
                 u.getScholarships(),
                 u.getLevel(),
                 u.getOpportunities(),

@@ -16,7 +16,10 @@ import java.util.List;
 
 @Table(name = "countries", indexes = @Index(name = "idx_country_name", columnList = "name"))
 public class CountryEntity extends BaseEntity{ ///  davlatlar ro'yhatini saqlash uchun
-    private String name;
+    private String nameUz;
+    private String nameRus;
+    private String nameEng;
+
 
     @OneToMany(mappedBy = "country", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CityEntity> cities;
@@ -24,7 +27,9 @@ public class CountryEntity extends BaseEntity{ ///  davlatlar ro'yhatini saqlash
     @OneToMany(mappedBy = "country", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<UniversityEntity> universities;
 
-    public CountryEntity(String name) {
-        this.name = name;
+    public CountryEntity(String nameUz, String nameRus, String nameEng) {
+        this.nameUz = nameUz;
+        this.nameRus = nameRus;
+        this.nameEng = nameEng;
     }
 }
