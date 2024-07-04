@@ -12,6 +12,9 @@ import java.util.UUID;
 @Getter
 @Setter
 public class CityCreateDTO {
-    private String name;
+    private String nameUz;
+    private String nameEng;
+    private String nameRus;
+
     private UUID countryId;
 }

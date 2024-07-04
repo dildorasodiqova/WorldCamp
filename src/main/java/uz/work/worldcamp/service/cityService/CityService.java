@@ -5,14 +5,14 @@ import uz.work.worldcamp.dtos.responceDto.CityResponseDTO;
 import uz.work.worldcamp.entities.CityEntity;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public interface CityService {
-    CityEntity getById(UUID cityId);
     String deleteCity(UUID id);
     String activateCity(UUID id);
-    CityResponseDTO updateCity(UUID id, CityCreateDTO dto);
-    List<CityResponseDTO> getCitiesByCountryId(UUID id);
-    List<CityResponseDTO> getAllCities();
+    CityResponseDTO updateCity(UUID id, CityCreateDTO dto, Locale locale);
+    List<CityResponseDTO> getCitiesByCountryId(UUID countryId, Locale locale);
+
     CityResponseDTO createCity(CityCreateDTO dto);
 }

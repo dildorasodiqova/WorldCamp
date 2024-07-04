@@ -13,15 +13,15 @@ import java.util.UUID;
 public interface FacultyCommentRepository extends JpaRepository<FacultyCommentEntity, UUID> {
     List<FacultyCommentEntity> findAllByParentId(UUID parentId);
     List<FacultyCommentEntity> findAllByUserId(UUID userId);
-
-    List<FacultyCommentEntity> findAllByFacultyIdAndIsActiveTrue(UUID facultyId);
+    @Query("select fc from facultyComment fc where fc.parentId is null and fc.facultyId = :facultyId and fc.isActive = true")
+    List<FacultyCommentEntity> findAllByFacultyIdAndIsActiveTrue(@Param("facultyId") UUID facultyId);
 
     @Modifying
     @Query("update facultyComment fc set fc.isActive = false where fc.id = :commentId")
-    int deactivateByAdmin(@Param("commentId") UUID commentId);
+    void deactivateByAdmin(@Param("commentId") UUID commentId);
     @Modifying
     @Query("UPDATE facultyComment fc SET fc.isActive = false WHERE fc.id = :commentId and fc.userId = :userId")
-    int deactivateComments(@Param("commentId") UUID commentId, @Param("userId") UUID userId);
+    void deactivateComments(@Param("commentId") UUID commentId, @Param("userId") UUID userId);
 
 
     @Modifying

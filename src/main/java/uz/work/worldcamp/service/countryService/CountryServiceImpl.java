@@ -10,6 +10,7 @@ import uz.work.worldcamp.exception.DataNotFoundException;
 import uz.work.worldcamp.repositories.CountryRepository;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -19,10 +20,10 @@ public class CountryServiceImpl implements CountryService{
     private final CountryRepository countryRepository;
     @Override
     public CountryResponseDTO create(CountryCreateDTO dto) {
-        if (countryRepository.existsAllByNameIgnoreCase(dto.getName())) {
+        if (countryRepository.findByName(dto.getNameEng(), dto.getNameUz(), dto.getNameRus())) {
             throw  new DataAlreadyExistsException("This country already exists! \n Please try again.");
         }
-        CountryEntity save = countryRepository.save(new CountryEntity(dto.getName()));
+        CountryEntity save = countryRepository.save(new CountryEntity(dto.getNameUz(), dto.getNameRus(), dto.getNameEng()));
         return mapToResponseDTO(save);
     }
 
@@ -36,16 +37,19 @@ public class CountryServiceImpl implements CountryService{
 
 
     @Override
-    public CountryResponseDTO updateCountry(UUID id, CountryCreateDTO countryCreateDTO) {
-        if (countryRepository.existsByIdNotAndName(id, countryCreateDTO.getName())) {
+    public CountryResponseDTO updateCountry(UUID id, CountryCreateDTO country) {
+        CountryEntity entity = countryRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Country not found"));
+
+        if (countryRepository.existsByIdNotAndName(id, country.getNameEng(), country.getNameUz(), country.getNameRus())) {
             throw  new DataAlreadyExistsException("This country already exists! \n Please try again.");
         }
-        CountryEntity country = countryRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Country not found"));
 
-        country.setName(countryCreateDTO.getName());
+        entity.setNameUz(country.getNameUz());
+        entity.setNameRus(country.getNameRus());
+        entity.setNameEng(country.getNameEng());
 
-        CountryEntity updatedCountry = countryRepository.save(country);
-        return mapToResponseDTO(updatedCountry);
+        countryRepository.save(entity);
+        return mapToResponseDTO(entity);
     }
 
 
@@ -72,12 +76,9 @@ public class CountryServiceImpl implements CountryService{
     }
 
 
-    private CountryResponseDTO mapToResponseDTO(CountryEntity country) {
-        CountryResponseDTO countryResponseDTO = new CountryResponseDTO();
-        countryResponseDTO.setId(country.getId());
-        countryResponseDTO.setName(country.getName());
-        // set other fields as needed. shu yerda kop  narsal;ari yoq. togrlash kk
-        return countryResponseDTO;
+    private CountryResponseDTO mapToResponseDTO(CountryEntity country, Locale locale) {
+        return new CountryResponseDTO(country.getId(), country.);
+
     }
 }
 

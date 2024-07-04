@@ -8,5 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CountryCreateDTO {
-    private String name;
+    private String nameUz;
+    private String nameRus;
+    private String nameEng;
 }

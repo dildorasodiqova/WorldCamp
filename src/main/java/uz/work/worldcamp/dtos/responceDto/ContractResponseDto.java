@@ -7,13 +7,19 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class UniversityShortInfoDto {
+public class ContractResponseDto {
     private UUID id;
-    private String name;
+    private UUID universityId;
+    private Integer highestAmount;
+    private Integer averageAmount;
+    private Integer minimumAmount;
+    private String currency;
     private LocalDateTime createdDate;
-    private LocalDateTime updateDate;
+    private LocalDateTime updatedDate;
+
 }

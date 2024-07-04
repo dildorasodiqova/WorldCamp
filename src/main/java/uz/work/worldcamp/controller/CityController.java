@@ -13,6 +13,7 @@ import uz.work.worldcamp.dtos.responceDto.CityResponseDTO;
 import uz.work.worldcamp.service.cityService.CityService;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @RestController
@@ -39,9 +40,12 @@ public class CityController {
             security = @SecurityRequirement(name = "pre authorize", scopes = {"ADMIN"})
     )
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
-    @GetMapping("/{id}")
-    public ResponseEntity<List<CityResponseDTO>> getCitiesByCountryId(@PathVariable UUID countryId) {
-        return ResponseEntity.ok(cityService.getCitiesByCountryId(countryId));
+    @GetMapping("/{countryId}")
+    public ResponseEntity<List<CityResponseDTO>> getCitiesByCountryId(
+            @PathVariable UUID countryId,
+            @RequestParam Locale locale
+    ) {
+        return ResponseEntity.ok(cityService.getCitiesByCountryId(countryId, locale));
     }
 
     @Operation(
@@ -75,22 +79,13 @@ public class CityController {
     )
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<CityResponseDTO> updateCity(@PathVariable UUID id, @RequestBody CityCreateDTO dto) {
-        CityResponseDTO updatedCity = cityService.updateCity(id, dto);
+    public ResponseEntity<CityResponseDTO> updateCity(@PathVariable UUID id, @RequestBody CityCreateDTO dto, @RequestParam Locale locale) {
+        CityResponseDTO updatedCity = cityService.updateCity(id, dto, locale);
         return ResponseEntity.ok(updatedCity);
     }
 
-    @Operation(
-            description = "Get all cities",
-            method = "GET method is supported",
-            security = @SecurityRequirement(name = "pre authorize", scopes = {"ADMIN"})
-    )
-    @PermitAll
-    @GetMapping("/getAll")
-    public ResponseEntity<List<CityResponseDTO>> getAllCities() {
-        List<CityResponseDTO> cities = cityService.getAllCities();
-        return ResponseEntity.ok(cities);
-    }
+
+
 
 
 }

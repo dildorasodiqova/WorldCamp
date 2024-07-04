@@ -30,6 +30,8 @@ public class UniversityResponseDTO {
     private Integer eduCount;/// ta'lim yo'nalishlarining umumiy soni
     private Integer worldRating;
     private Integer anotherRating;
+    private List<String> eduForm;
+    private List<String> eduDirection;
     private List<String> achievements;
     private Map<String, String> management;
     private Map<String, String> images;
@@ -38,7 +40,7 @@ public class UniversityResponseDTO {
     private List<String> requirements;
     private List<String> document;
     private Map<String, String> socials;
-    private List<String> exam;
+    private List<String> examDate;
     private List<String> scholarships;
     private List<String> level;
     private List<String> opportunities;

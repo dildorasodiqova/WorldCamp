@@ -16,6 +16,13 @@ public interface UniversityRepository extends JpaRepository<UniversityEntity, UU
     Optional<UniversityEntity> findByName(@Param("nameEng") String nameEng, @Param("nameUz") String nameUz, @Param("nameRus") String nameRus);
 
     List<UniversityEntity> findByCountryIdAndCityId(UUID countryId, UUID cityId);
+
+    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END " +
+            "FROM universityEntity u " +
+            "WHERE u.id <> :id " +
+            "AND (u.nameUz = :nameUZ OR u.nameRus = :nameRus OR u.nameEng = :nameEng)")
+    boolean existsByNameAndIdNot(@Param("id") UUID id,@Param("nameEng") String nameEng, @Param("nameUz") String nameUz, @Param("nameRus") String nameRus);
+
     @Modifying
     @Transactional
     @Query("UPDATE universityEntity c SET c.isActive = false WHERE c.id = :id")

@@ -29,6 +29,7 @@ public class FacultyCreateDTO {
     private List<String> lang;
     private List<String> form;
     private int contract;
+    private String dekan;
     private List<String> requirements;
     private List<String> document;
     private String data;

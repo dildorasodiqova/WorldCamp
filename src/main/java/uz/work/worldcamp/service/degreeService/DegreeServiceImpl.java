@@ -11,6 +11,7 @@ import uz.work.worldcamp.exception.DataNotFoundException;
 import uz.work.worldcamp.repositories.DegreeRepository;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -27,23 +28,24 @@ public class DegreeServiceImpl implements DegreeService {
         DegreeEntity savedDegree = degreeRepository.save(new DegreeEntity(degree.getLevelUz(), degree.getLevelRus(), degree.getLevelEng(), degree.getUniversityId()));
         return mapToResponseDTO(savedDegree);
     }
+
     @Override
-    public List<DegreeResponseDTO> getAllDegrees() {
+    public List<DegreeResponseDTO> getAllDegrees(Locale locale) {
         return degreeRepository.findAll().stream()
-                .map(this::mapToResponseDTO)
+                .map(this->mapToResponseDTO(locale))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public DegreeResponseDTO getById(UUID id) {
+    public DegreeResponseDTO getById(UUID id, Locale locale) {
         DegreeEntity degree = degreeRepository.findById(id).orElseThrow(() -> new RuntimeException("Degree not found"));
-        return mapToResponseDTO(degree);
+        return mapToResponseDTO(degree, locale);
     }
 
     @Transactional
     @Override
     public String update(UUID id, DegreeCreateDTO degree) {
-        int updatedRows = degreeRepository.updateDegree(id, degree.getLevelEng(), degree.getLevelUz(),degree.getLevelRus(), degree.getUniversityId() );
+        int updatedRows = degreeRepository.updateDegree(id, degree.getLevelEng(), degree.getLevelUz(), degree.getLevelRus(), degree.getUniversityId());
         if (updatedRows == 0) {
             throw new RuntimeException("Degree update failed");
         }
@@ -70,13 +72,34 @@ public class DegreeServiceImpl implements DegreeService {
         }
     }
 
-    private DegreeResponseDTO mapToResponseDTO(DegreeEntity degree) {
+    private DegreeResponseDTO mapToResponseDTO(DegreeEntity degree, Locale locale) {
+        String level;
+        String name;
+        switch (locale.getLanguage()) {
+            case "uz" -> {
+                level = degree.getLevelUz();
+                name = degree.getUniversity().getNameUz();
+            }
+            case "ru" -> {
+                level = degree.getLevelRus();
+                name = degree.getUniversity().getNameRus();
+            }
+            default -> {
+                level = degree.getLevelEng();
+                name = degree.getUniversity().getNameEng();
+            }
+        }
         return new DegreeResponseDTO(
                 degree.getId(),
-                degree.getLevel(),
+                level,
                 new UniversityShortInfoDto(
                         degree.getUniversity().getId(),
-                        degree.getUniversity().ge
-                        ));
+                        name,
+                        degree.getUniversity().getCreatedDate(),
+                        degree.getUniversity().getUpdateDate()
+                ),
+                degree.getCreatedDate(),
+                degree.getUpdateDate()
+        );
     }
 }

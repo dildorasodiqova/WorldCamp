@@ -20,4 +20,5 @@ public class UserPassword extends BaseEntity{
     private UserEntity user;
     private LocalDateTime sentDate;
     private Integer expiry;
+
 }

@@ -100,7 +100,7 @@ public class UniversityEntity extends BaseEntity{
     private Address address;
 
     @Embedded
-    private Contract contract;
+    private ContractEntity contract;
 
     @Column(name="country_id")
     private UUID countryId;

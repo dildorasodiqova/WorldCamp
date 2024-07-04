@@ -12,11 +12,10 @@ import uz.work.worldcamp.exception.DataNotFoundException;
 import uz.work.worldcamp.repositories.CityRepository;
 import uz.work.worldcamp.service.countryService.CountryService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Nodes.collect;
 
 @Service
 @RequiredArgsConstructor
@@ -24,42 +23,52 @@ public class CityServiceImpl implements CityService {
     private final CityRepository cityRepository;
     @Override
     public CityResponseDTO createCity(CityCreateDTO dto) {
-         if (cityRepository.existsAllByNameIgnoreCase(dto.getName())) {
+         if (cityRepository.findByName(dto.getNameEng(), dto.getNameUz(), dto.getNameRus())) {
             throw new IllegalArgumentException("City with this name already exists.");
         }
-         CityEntity city = new CityEntity(dto.getName(),dto.getCountryId() );
+         CityEntity city = new CityEntity(dto.getNameUz(), dto.getNameEng(), dto.getNameRus(),dto.getCountryId() );
         cityRepository.save(city);
         return convertToResponseDTO(city);
     }
 
     @Override
-    public List<CityResponseDTO> getAllCities() {
+    public List<CityResponseDTO> getAllCities(Locale locale) {
         return cityRepository.findAll().stream()
-                .map(this::convertToResponseDTO)
+                .map(this::convertToResponseDTO(locale))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<CityResponseDTO> getCitiesByCountryId(UUID countryId) {
+    public List<CityResponseDTO> getCitiesByCountryId(UUID countryId, Locale locale) {
+
         return cityRepository.findByCountry_Id(countryId).stream()
-                .map(city -> new CityResponseDTO(city.getId(), city.getName(), city.getCreatedDate(), city.getUpdateDate()))
+                .map(city -> {
+                    String cityName = switch (locale.getLanguage()) {
+                        case "uz" -> city.getNameUz();
+                        case "ru" -> city.getNameRus();
+                        default -> city.getNameEng();
+                    };
+                    return new CityResponseDTO(city.getId(), cityName, city.getCreatedDate(), city.getUpdateDate());
+                })
                 .collect(Collectors.toList());
     }
 
 
     @Override
-    public CityResponseDTO updateCity(UUID id, CityCreateDTO dto) {
+    public CityResponseDTO updateCity(UUID id, CityCreateDTO dto, Locale locale) {
         CityEntity city = cityRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("City not found."));
 
-        Optional<CityEntity> existingCity = cityRepository.findByName(dto.getName());
-        if (existingCity.isPresent() && !existingCity.get().getId().equals(id)) {
+        if (cityRepository.existsByNameAndIdNot(id, dto.getNameEng(), dto.getNameUz(), dto.getNameRus())){
             throw new IllegalArgumentException("City with this name already exists.");
         }
 
-        city.setName(dto.getName());
-        cityRepository.save(city);
-        return convertToResponseDTO(city);
+        city.setNameUz(dto.getNameUz());
+        city.setNameRus(dto.getNameRus());
+        city.setNameEng(dto.getNameEng());
+        city.setCountryId(dto.getCountryId());
+
+        return convertToResponseDTO( cityRepository.save(city), locale);
     }
 
 
@@ -82,13 +91,20 @@ public class CityServiceImpl implements CityService {
         }
     }
 
-    private CityResponseDTO convertToResponseDTO(CityEntity city) {
-        return new CityResponseDTO(city.getId(), city.getName(), city.getCreatedDate(), city.getUpdateDate());
-    }
+    private CityResponseDTO convertToResponseDTO(CityEntity city, Locale locale) {
+        String cityName;
 
+        switch (locale.getLanguage()) {
+            case "uz" -> cityName = city.getNameUz();
+            case "ru" -> cityName = city.getNameRus();
+            default -> cityName = city.getNameEng();
+        }
 
-    @Override
-    public CityEntity getById(UUID cityId) {
-        return cityRepository.findById(cityId).orElseThrow(()->  new DataNotFoundException("This city not found !"));
-    }
+        return new CityResponseDTO(
+                city.getId(),
+                cityName,
+                city.getCreatedDate(),
+                city.getUpdateDate()
+        );}
+
 }

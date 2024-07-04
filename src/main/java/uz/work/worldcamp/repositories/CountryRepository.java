@@ -7,15 +7,18 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import uz.work.worldcamp.entities.CountryEntity;
+import uz.work.worldcamp.entities.UniversityEntity;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface CountryRepository extends JpaRepository<CountryEntity, UUID> {
-    @Cacheable("countryEntity")
-    Boolean existsAllByNameIgnoreCase(String name);
+    @Query("SELECT COUNT(u) > 0 FROM countryEntity u WHERE LOWER(u.nameEng) = LOWER(:nameEng) or LOWER(u.nameUz) = LOWER(:nameUz) or LOWER(u.nameRus) = LOWER(:nameRus)")
+    boolean findByName(@Param("nameEng") String nameEng, @Param("nameUz") String nameUz, @Param("nameRus") String nameRus);
 
-    @Query("SELECT COUNT(c) > 0 FROM countryEntity c WHERE c.id != :id AND LOWER(c.name) = LOWER(:name)")
-    boolean existsByIdNotAndName(@Param("id") UUID id, @Param("name") String name);
+
+    @Query("SELECT COUNT(c) > 0 FROM countryEntity c WHERE c.id != :id AND LOWER(c.nameUz) = LOWER(:name) or LOWER(c.nameRus) = LOWER(:nameRus) or LOWER(c.nameEng) = LOWER(:nameEng) ")
+    boolean existsByIdNotAndName(@Param("id") UUID id, @Param("nameEng") String nameEng, @Param("nameUz") String nameUz, @Param("nameRus") String nameRus);
 
     @Modifying
     @Transactional

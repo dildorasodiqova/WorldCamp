@@ -12,6 +12,7 @@ import uz.work.worldcamp.dtos.responceDto.UniversityResponseDTO;
 import uz.work.worldcamp.service.universityService.UniversityService;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @RestController
@@ -27,9 +28,10 @@ public class UniversityController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/create")
     public ResponseEntity<UniversityResponseDTO> createUniversity(
-            @RequestBody UniversityCreateDTO dto) {
+            @RequestBody UniversityCreateDTO dto,
+            @RequestParam Locale locale) {
 
-        return ResponseEntity.ok(universityService.createUniversity(dto));
+        return ResponseEntity.ok(universityService.createUniversity(dto, locale));
     }
 
     @Operation(
@@ -40,8 +42,9 @@ public class UniversityController {
     @GetMapping("/all")
     public ResponseEntity<List<UniversityResponseDTO>> getAllUniversities(
             @RequestParam UUID countryId,
-            @RequestParam UUID cityId) {
-        List<UniversityResponseDTO> universities = universityService.getAllUniversities(countryId, cityId);
+            @RequestParam UUID cityId,
+            @RequestParam Locale locale) {
+        List<UniversityResponseDTO> universities = universityService.getAllUniversities(countryId, cityId, locale);
         return ResponseEntity.ok(universities);
     }
 
@@ -51,8 +54,8 @@ public class UniversityController {
     )
     @PermitAll
     @GetMapping("/{id}")
-    public ResponseEntity<UniversityResponseDTO> getUniversityById(@PathVariable UUID id) {
-        UniversityResponseDTO university = universityService.getUniversityById(id);
+    public ResponseEntity<UniversityResponseDTO> getUniversityById(@PathVariable UUID id, @RequestParam Locale locale) {
+        UniversityResponseDTO university = universityService.getUniversityById(id, locale);
         return ResponseEntity.ok(university);
     }
 
@@ -65,8 +68,9 @@ public class UniversityController {
     @PutMapping("/update/{id}")
     public ResponseEntity<UniversityResponseDTO> updateUniversity(
             @PathVariable UUID id,
-            @RequestBody UniversityCreateDTO dto) {
-        UniversityResponseDTO updatedUniversity = universityService.updateUniversity(id, dto);
+            @RequestBody UniversityCreateDTO dto,
+            @RequestParam Locale locale) {
+        UniversityResponseDTO updatedUniversity = universityService.updateUniversity(id, dto, locale);
         return ResponseEntity.ok(updatedUniversity);
     }
 

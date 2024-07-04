@@ -15,7 +15,9 @@ import java.util.UUID;
 @Setter
 @Entity(name = "cityEntity")
 public class CityEntity extends BaseEntity{
-    private String name;
+    private String nameUz;
+    private String nameEng;
+    private String nameRus;
 
     @Column(name = "country_id")
     private UUID countryId;
@@ -29,8 +31,10 @@ public class CityEntity extends BaseEntity{
     private List<UniversityEntity> universities;
 
 
-    public CityEntity(String name, UUID countryId) {
-        this.name = name;
+    public CityEntity(String nameUz,String nameEng, String nameRus,  UUID countryId) {
+        this.nameUz = nameUz;
+        this.nameEng = nameEng;
+        this.nameRus = nameRus;
         this.countryId = countryId;
     }
 }
