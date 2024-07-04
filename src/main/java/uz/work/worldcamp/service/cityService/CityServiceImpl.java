@@ -22,7 +22,7 @@ import static java.util.stream.Nodes.collect;
 public class CityServiceImpl implements CityService {
     private final CityRepository cityRepository;
     @Override
-    public CityResponseDTO createCity(CityCreateDTO dto) {
+    public CityResponseDTO createCity(CityCreateDTO dto, Locale locale) {
          if (cityRepository.findByName(dto.getNameEng(), dto.getNameUz(), dto.getNameRus())) {
             throw new IllegalArgumentException("City with this name already exists.");
         }

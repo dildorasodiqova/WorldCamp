@@ -5,7 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uz.work.worldcamp.entities.Address;
-import uz.work.worldcamp.entities.Contract;
+import uz.work.worldcamp.entities.ContractEntity;
+import uz.work.worldcamp.entities.ContractEntity;
 import uz.work.worldcamp.entities.Location;
 
 import java.time.LocalDateTime;
@@ -49,7 +50,7 @@ public class UniversityResponseDTO {
     private List<String> partner;
     private Location location;
     private Address address;
-    private Contract contract;
+    private ContractEntity contract;
     private UUID countryId;
     private UUID cityId;
     private List<FacultyResponseDTO> faculties;
