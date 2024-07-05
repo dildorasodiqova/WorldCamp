@@ -9,10 +9,20 @@ import org.springframework.transaction.annotation.Transactional;
 import uz.work.worldcamp.entities.CountryEntity;
 import uz.work.worldcamp.entities.UniversityEntity;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface CountryRepository extends JpaRepository<CountryEntity, UUID> {
+
+    @Query("SELECT c FROM countryEntity c " +
+            "WHERE LOWER(c.nameEng) LIKE LOWER(CONCAT('%', :searchWord, '%')) " +
+            "OR LOWER(c.nameRus) LIKE LOWER(CONCAT('%', :searchWord, '%')) " +
+            "OR LOWER(c.nameUz) LIKE LOWER(CONCAT('%', :searchWord, '%')) " +
+            "AND c.isActive = true")
+    List<CountryEntity> findAllBySearchWord(@Param("searchWord") String searchWord);
+
+
     @Query("SELECT COUNT(u) > 0 FROM countryEntity u WHERE LOWER(u.nameEng) = LOWER(:nameEng) or LOWER(u.nameUz) = LOWER(:nameUz) or LOWER(u.nameRus) = LOWER(:nameRus)")
     boolean findByName(@Param("nameEng") String nameEng, @Param("nameUz") String nameUz, @Param("nameRus") String nameRus);
 
@@ -29,4 +39,8 @@ public interface CountryRepository extends JpaRepository<CountryEntity, UUID> {
     @Transactional
     @Query("UPDATE countryEntity c SET c.isActive = true WHERE c.id = :id")
     int activateCountryById(@Param("id") UUID id);
+
+    List<CountryEntity> findAllByIsActiveTrue();
+
+
 }

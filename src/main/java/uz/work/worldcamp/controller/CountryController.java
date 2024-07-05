@@ -12,6 +12,7 @@ import uz.work.worldcamp.dtos.responceDto.CountryResponseDTO;
 import uz.work.worldcamp.service.countryService.CountryService;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @RestController
@@ -27,8 +28,8 @@ public class CountryController {
     )
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
-    public ResponseEntity<CountryResponseDTO> createCountry(@RequestBody CountryCreateDTO dto) {
-        CountryResponseDTO createdCountry = countryService.create(dto);
+    public ResponseEntity<CountryResponseDTO> createCountry(@RequestBody CountryCreateDTO dto, Locale locale) {
+        CountryResponseDTO createdCountry = countryService.create(dto, locale);
         return ResponseEntity.ok(createdCountry);
     }
 
@@ -38,24 +39,11 @@ public class CountryController {
     )
     @PermitAll
     @GetMapping("/getALl")
-    public ResponseEntity<List<CountryResponseDTO>> getAllCountries() {
-        List<CountryResponseDTO> countries = countryService.getAllCountries();
+    public ResponseEntity<List<CountryResponseDTO>> getAllCountries(@RequestParam(required = false) String searchWord , Locale locale) {
+        List<CountryResponseDTO> countries = countryService.getAllCountries(searchWord, locale);
         return ResponseEntity.ok(countries);
     }
 
-
-
-    @Operation(
-            description = "This method updates a country by Long ID",
-            method = "PUT method is supported",
-            security = @SecurityRequirement(name = "pre authorize", scopes = {"ADMIN"})
-    )
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @PutMapping("/long/{id}")
-    public ResponseEntity<CountryResponseDTO> updateCountryByLongId(@PathVariable UUID id, @RequestBody CountryCreateDTO dto) {
-        CountryResponseDTO updatedCountry = countryService.updateCountry(id, dto);
-        return ResponseEntity.ok(updatedCountry);
-    }
 
     @Operation(
             description = "This method updates a country by UUID",
@@ -64,8 +52,11 @@ public class CountryController {
     )
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/update/{id}")
-    public ResponseEntity<CountryResponseDTO> updateCountryByUUID(@PathVariable UUID id, @RequestBody CountryCreateDTO dto) {
-        CountryResponseDTO updatedCountry = countryService.updateCountry(id, dto);
+    public ResponseEntity<CountryResponseDTO> updateCountryByUUID(
+            @PathVariable UUID id,
+            @RequestBody CountryCreateDTO dto,
+            Locale locale) {
+        CountryResponseDTO updatedCountry = countryService.updateCountry(id, dto, locale);
         return ResponseEntity.ok(updatedCountry);
     }
 

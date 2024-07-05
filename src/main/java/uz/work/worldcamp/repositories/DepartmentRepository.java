@@ -7,9 +7,17 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import uz.work.worldcamp.entities.DepartmentEntity;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface DepartmentRepository extends JpaRepository<DepartmentEntity, UUID> {
+    @Query("SELECT d FROM departmentEntity d WHERE " +
+            "(:keyword IS NOT NULL AND (" +
+            "LOWER(d.nameEng) LIKE LOWER(CONCAT('%', :keyword,'%')) OR " +
+            "LOWER(d.nameRus) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(d.nameUz) LIKE LOWER(CONCAT('%', :keyword, '%')))) " +
+            "AND d.universityId = :universityId AND d.isActive = true")
+    List<DepartmentEntity> findAllByKeywordAndUniversityId(@Param("keyword") String keyword, @Param("universityId") UUID universityId);
 
 
     @Query("SELECT COUNT(d) > 0 FROM departmentEntity d WHERE d.id != :id AND (LOWER(d.nameEng) = LOWER(:nameEng) OR LOWER(d.nameUz) = LOWER(:nameUz) OR LOWER(d.nameRus) = LOWER(:nameRus))")
@@ -34,6 +42,7 @@ public interface DepartmentRepository extends JpaRepository<DepartmentEntity, UU
     @Transactional
     @Query("UPDATE departmentEntity c SET c.isActive = true WHERE c.id = :id")
     int activateDepartmentById(@Param("id") UUID id);
+
 
 
 

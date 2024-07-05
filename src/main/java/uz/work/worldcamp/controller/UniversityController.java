@@ -29,7 +29,7 @@ public class UniversityController {
     @PostMapping("/create")
     public ResponseEntity<UniversityResponseDTO> createUniversity(
             @RequestBody UniversityCreateDTO dto,
-            @RequestParam Locale locale) {
+             Locale locale) {
 
         return ResponseEntity.ok(universityService.createUniversity(dto, locale));
     }
@@ -41,10 +41,11 @@ public class UniversityController {
     @PermitAll
     @GetMapping("/all")
     public ResponseEntity<List<UniversityResponseDTO>> getAllUniversities(
-            @RequestParam UUID countryId,
-            @RequestParam UUID cityId,
-            @RequestParam Locale locale) {
-        List<UniversityResponseDTO> universities = universityService.getAllUniversities(countryId, cityId, locale);
+            @RequestParam(required = false) UUID countryId,
+            @RequestParam(required = false) UUID cityId,
+             @RequestParam(required = false) String searchWord,
+             Locale locale) {
+        List<UniversityResponseDTO> universities = universityService.getAllUniversities(countryId, cityId,searchWord, locale);
         return ResponseEntity.ok(universities);
     }
 
@@ -54,7 +55,7 @@ public class UniversityController {
     )
     @PermitAll
     @GetMapping("/{id}")
-    public ResponseEntity<UniversityResponseDTO> getUniversityById(@PathVariable UUID id, @RequestParam Locale locale) {
+    public ResponseEntity<UniversityResponseDTO> getUniversityById(@PathVariable UUID id,  Locale locale) {
         UniversityResponseDTO university = universityService.getUniversityById(id, locale);
         return ResponseEntity.ok(university);
     }
@@ -69,7 +70,7 @@ public class UniversityController {
     public ResponseEntity<UniversityResponseDTO> updateUniversity(
             @PathVariable UUID id,
             @RequestBody UniversityCreateDTO dto,
-            @RequestParam Locale locale) {
+             Locale locale) {
         UniversityResponseDTO updatedUniversity = universityService.updateUniversity(id, dto, locale);
         return ResponseEntity.ok(updatedUniversity);
     }

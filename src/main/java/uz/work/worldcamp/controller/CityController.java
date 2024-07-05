@@ -29,23 +29,25 @@ public class CityController {
     )
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/")
-    public ResponseEntity<CityResponseDTO> createCity(@RequestBody CityCreateDTO dto) {
-        CityResponseDTO createdCity = cityService.createCity(dto);
+    public ResponseEntity<CityResponseDTO> createCity(@RequestBody CityCreateDTO dto, Locale locale) {
+        CityResponseDTO createdCity = cityService.createCity(dto, locale);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCity);
     }
 
+
     @Operation(
-            description = "Get a city by ID",
+            description = "Get all cities",
             method = "GET method is supported",
             security = @SecurityRequirement(name = "pre authorize", scopes = {"ADMIN"})
     )
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
-    @GetMapping("/{countryId}")
-    public ResponseEntity<List<CityResponseDTO>> getCitiesByCountryId(
-            @PathVariable UUID countryId,
-            @RequestParam Locale locale
-    ) {
-        return ResponseEntity.ok(cityService.getCitiesByCountryId(countryId, locale));
+    @GetMapping
+    public ResponseEntity<List<CityResponseDTO>> getAllCities(
+            @RequestParam(required = false) String searchWork,
+            @RequestParam(required = false) UUID countryId,
+            @RequestParam Locale locale) {
+        List<CityResponseDTO> cities = cityService.getAllCities(countryId, searchWork, locale);
+        return ResponseEntity.ok(cities);
     }
 
     @Operation(

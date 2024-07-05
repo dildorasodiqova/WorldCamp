@@ -39,8 +39,11 @@ public class FacultyController {
     )
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     @GetMapping("/university/{universityId}")
-    public ResponseEntity<List<FacultyResponseDTO>> getAllFaculties(@PathVariable UUID universityId, @RequestParam Locale locale) {
-        List<FacultyResponseDTO> response = facultyService.getAllFaculties(universityId, locale);
+    public ResponseEntity<List<FacultyResponseDTO>> getAllFaculties(
+            @PathVariable UUID universityId,
+             @RequestParam(required = false) String searchWord,
+             Locale locale) {
+        List<FacultyResponseDTO> response = facultyService.getAllFaculties(universityId, searchWord, locale);
         return ResponseEntity.ok(response);
     }
 
@@ -51,7 +54,7 @@ public class FacultyController {
     )
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     @GetMapping("/{id}")
-    public ResponseEntity<FacultyResponseDTO> getFacultyById(@PathVariable UUID id, @RequestParam Locale locale) {
+    public ResponseEntity<FacultyResponseDTO> getFacultyById(@PathVariable UUID id,  Locale locale) {
         FacultyResponseDTO response = facultyService.getFacultyById(id, locale);
         return ResponseEntity.ok(response);
     }
@@ -63,7 +66,7 @@ public class FacultyController {
     )
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<FacultyResponseDTO> updateFaculty(@PathVariable UUID id, @RequestBody FacultyCreateDTO facultyDto, @RequestParam Locale locale) {
+    public ResponseEntity<FacultyResponseDTO> updateFaculty(@PathVariable UUID id, @RequestBody FacultyCreateDTO facultyDto,  Locale locale) {
         FacultyResponseDTO response = facultyService.updateFaculty(id, facultyDto, locale);
         return ResponseEntity.ok(response);
     }

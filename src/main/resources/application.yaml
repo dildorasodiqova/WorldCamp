@@ -1,0 +1,44 @@
+
+spring:
+  application:
+    name: WorldCamp
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: 2004
+    url: jdbc:postgresql://localhost:5432/worldCamp
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+    show_sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: sodiqovadildora02@gmail.com
+    password: bu yerni o'zgartir garang
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+  flyway:
+    enabled: false
+
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger
+    tags-sorter: alpha
+    operations-sorter: alpha
+    disable-swagger-default-url: true
+    doc-expansion: none

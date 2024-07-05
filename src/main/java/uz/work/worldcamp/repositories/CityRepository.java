@@ -14,7 +14,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface CityRepository extends JpaRepository<CityEntity , UUID> {
-
+    @Query("SELECT c FROM cityEntity c WHERE (:countryId IS NULL OR c.country.id = :countryId) " +
+            "AND (:searchWork IS NULL OR LOWER(c.nameEng) LIKE LOWER(CONCAT('%', :searchWork, '%')) " +
+            "OR LOWER(c.nameRus) LIKE LOWER(CONCAT('%', :searchWork, '%')) " +
+            "OR LOWER(c.nameUz) LIKE LOWER(CONCAT('%', :searchWork, '%')))")
+    List<CityEntity> findByCountryIdAndSearchWork(@Param("countryId") UUID countryId,
+                                                  @Param("searchWork") String searchWork);
     @Query("SELECT COUNT(c) > 0 FROM cityEntity c WHERE LOWER(c.nameEng) = LOWER(:nameEng) or LOWER(c.nameUz) = LOWER(:nameUz) or LOWER(c.nameRus) = LOWER(:nameRus)")
     boolean findByName(@Param("nameEng") String nameEng, @Param("nameUz") String nameUz, @Param("nameRus") String nameRus);
 

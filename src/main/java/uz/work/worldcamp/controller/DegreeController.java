@@ -13,6 +13,7 @@ import uz.work.worldcamp.dtos.responceDto.DegreeResponseDTO;
 import uz.work.worldcamp.service.degreeService.DegreeService;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @RestController
@@ -28,8 +29,8 @@ public class DegreeController {
     )
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/")
-    public ResponseEntity<DegreeResponseDTO> createDegree(@RequestBody DegreeCreateDTO degreeCreateDTO) {
-        DegreeResponseDTO createdDegree = degreeService.createDegree(degreeCreateDTO);
+    public ResponseEntity<DegreeResponseDTO> createDegree(@RequestBody DegreeCreateDTO degree, Locale locale) {
+        DegreeResponseDTO createdDegree = degreeService.createDegree(degree, locale);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdDegree);
     }
 
@@ -39,9 +40,10 @@ public class DegreeController {
             security = @SecurityRequirement(name = "pre authorize", scopes = {"ADMIN"})
     )
     @PermitAll
-    @GetMapping("/getALL")
-    public ResponseEntity<List<DegreeResponseDTO>> getAllDegrees() {
-        return ResponseEntity.ok(degreeService.getAllDegrees());
+    @GetMapping("/getALL/{universityId}")
+    public ResponseEntity<List<DegreeResponseDTO>> getAllDegrees(
+            @PathVariable UUID universityId, Locale locale) {
+        return ResponseEntity.ok(degreeService.getAllDegrees(universityId, locale));
     }
 
     @Operation(
@@ -62,8 +64,8 @@ public class DegreeController {
     )
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<DegreeResponseDTO> getDegreeById(@PathVariable UUID id) {
-        return ResponseEntity.ok(degreeService.getById(id));
+    public ResponseEntity<DegreeResponseDTO> getDegreeById(@PathVariable UUID id, Locale locale) {
+        return ResponseEntity.ok(degreeService.getById(id, locale));
     }
 
     @Operation(

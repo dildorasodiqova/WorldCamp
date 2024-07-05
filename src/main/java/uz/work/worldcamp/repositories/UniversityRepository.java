@@ -13,15 +13,34 @@ import java.util.UUID;
 
 public interface UniversityRepository extends JpaRepository<UniversityEntity, UUID> {
     @Query("SELECT u FROM universityEntity u WHERE LOWER(u.nameEng) = LOWER(:nameEng) or LOWER(u.nameUz) = LOWER(:nameUz) or LOWER(u.nameRus) = LOWER(:nameRus)")
-    Optional<UniversityEntity> findByName(@Param("nameEng") String nameEng, @Param("nameUz") String nameUz, @Param("nameRus") String nameRus);
+    Optional<UniversityEntity> findByName(
+            @Param("nameEng") String nameEng,
+            @Param("nameUz") String nameUz,
+            @Param("nameRus") String nameRus);
 
-    List<UniversityEntity> findByCountryIdAndCityId(UUID countryId, UUID cityId);
+
+
+    @Query("SELECT u FROM universityEntity u " +
+            "WHERE (:countryId IS NULL OR u.countryId = :countryId) " +
+            "AND (:cityId IS NULL OR u.cityId = :cityId) " +
+            "AND (LOWER(u.nameEng) LIKE LOWER(CONCAT('%', :searchWord, '%')) " +
+            "OR LOWER(u.nameRus) LIKE LOWER(CONCAT('%', :searchWord, '%')) " +
+            "OR LOWER(u.nameUz) LIKE LOWER(CONCAT('%', :searchWord, '%'))) " +
+            "AND u.isActive = true")
+    List<UniversityEntity> findByCountryIdAndCityIdAndSearchWord(
+            @Param("countryId") UUID countryId,
+            @Param("cityId") UUID cityId,
+            @Param("searchWord") String searchWord
+    );
 
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END " +
             "FROM universityEntity u " +
             "WHERE u.id <> :id " +
             "AND (u.nameUz = :nameUZ OR u.nameRus = :nameRus OR u.nameEng = :nameEng)")
-    boolean existsByNameAndIdNot(@Param("id") UUID id,@Param("nameEng") String nameEng, @Param("nameUz") String nameUz, @Param("nameRus") String nameRus);
+    boolean existsByNameAndIdNot(@Param("id") UUID id,
+                                 @Param("nameEng") String nameEng,
+                                 @Param("nameUz") String nameUz,
+                                 @Param("nameRus") String nameRus);
 
     @Modifying
     @Transactional

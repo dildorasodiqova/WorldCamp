@@ -21,6 +21,15 @@ public interface FacultyRepository extends JpaRepository<FacultyEntity, UUID> {
     @Query("UPDATE facultyEntity c SET c.isActive = true WHERE c.id = :id")
     int activateFacultyById(@Param("id") UUID id);
 
-    List<FacultyEntity> findAllByUniversityId(UUID universityId);
+    @Query("SELECT f FROM facultyEntity f " +
+            "WHERE f.universityId = :universityId " +
+            "AND (:searchWord IS NULL OR " +
+            "LOWER(f.nameEng) LIKE LOWER(CONCAT('%', :searchWord, '%')) OR " +
+            "LOWER(f.nameRus) LIKE LOWER(CONCAT('%', :searchWord, '%')) OR " +
+            "LOWER(f.nameUz) LIKE LOWER(CONCAT('%', :searchWord, '%'))) and f.isActive= :true")
+    List<FacultyEntity> findAllByUniversityId(
+            @Param("universityId") UUID universityId,
+            @Param("searchWord") String searchWord
+    );
 
 }

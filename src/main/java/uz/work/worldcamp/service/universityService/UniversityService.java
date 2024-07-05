@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface UniversityService {
     UniversityResponseDTO createUniversity(UniversityCreateDTO dto, Locale locale);
-    List<UniversityResponseDTO> getAllUniversities(UUID countryId, UUID cityId, Locale locale);
+    List<UniversityResponseDTO> getAllUniversities(UUID countryId, UUID cityId,String searchWord, Locale locale);
     UniversityResponseDTO getUniversityById(UUID id, Locale locale);
     UniversityResponseDTO updateUniversity(UUID id, UniversityCreateDTO dto, Locale locale);
     String deleteFaculty(UUID id);

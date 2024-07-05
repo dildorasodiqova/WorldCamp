@@ -1,6 +1,7 @@
 package uz.work.worldcamp.service.degreeService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.work.worldcamp.dtos.createDto.DegreeCreateDTO;
@@ -17,27 +18,35 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DegreeServiceImpl implements DegreeService {
     private final DegreeRepository degreeRepository;
 
     @Override
-    public DegreeResponseDTO createDegree(DegreeCreateDTO degree) {
+    public DegreeResponseDTO createDegree(DegreeCreateDTO degree, Locale locale) {
+        log.info("Creating degree with levelEng: {}, levelUz: {}, levelRus: {}, universityId: {}", degree.getLevelEng(), degree.getLevelUz(), degree.getLevelRus(), degree.getUniversityId());
+
         if (degreeRepository.existsByLevel(degree.getLevelEng(), degree.getLevelUz(), degree.getLevelRus())) {
             throw new RuntimeException("This degree level already exists");
         }
+
         DegreeEntity savedDegree = degreeRepository.save(new DegreeEntity(degree.getLevelUz(), degree.getLevelRus(), degree.getLevelEng(), degree.getUniversityId()));
-        return mapToResponseDTO(savedDegree);
+        return mapToResponseDTO(savedDegree, locale);
     }
 
     @Override
-    public List<DegreeResponseDTO> getAllDegrees(Locale locale) {
-        return degreeRepository.findAll().stream()
-                .map(this->mapToResponseDTO(locale))
+    public List<DegreeResponseDTO> getAllDegrees(UUID universityId, Locale locale) {
+        log.info("Fetching all degrees for universityId: {}", universityId);
+
+        return degreeRepository.findAllByUniversityIdAndIsActiveTrue(universityId).stream()
+                .map(degree -> mapToResponseDTO(degree, locale))
                 .collect(Collectors.toList());
     }
 
     @Override
     public DegreeResponseDTO getById(UUID id, Locale locale) {
+        log.info("Fetching degree by id: {}", id);
+
         DegreeEntity degree = degreeRepository.findById(id).orElseThrow(() -> new RuntimeException("Degree not found"));
         return mapToResponseDTO(degree, locale);
     }
@@ -45,15 +54,19 @@ public class DegreeServiceImpl implements DegreeService {
     @Transactional
     @Override
     public String update(UUID id, DegreeCreateDTO degree) {
+        log.info("Updating degree with id: {} to levelEng: {}, levelUz: {}, levelRus: {}, universityId: {}", id, degree.getLevelEng(), degree.getLevelUz(), degree.getLevelRus(), degree.getUniversityId());
+
         int updatedRows = degreeRepository.updateDegree(id, degree.getLevelEng(), degree.getLevelUz(), degree.getLevelRus(), degree.getUniversityId());
         if (updatedRows == 0) {
             throw new RuntimeException("Degree update failed");
         }
-        return "Successfully degree updated .";
+        return "Successfully updated degree.";
     }
 
     @Override
     public String delete(UUID id) {
+        log.info("Deleting degree with id: {}", id);
+
         int updatedRows = degreeRepository.deactivateDegreeById(id);
         if (updatedRows > 0) {
             return "Degree deactivated successfully.";
@@ -64,6 +77,8 @@ public class DegreeServiceImpl implements DegreeService {
 
     @Override
     public String activateDegree(UUID id) {
+        log.info("Activating degree with id: {}", id);
+
         int updatedRows = degreeRepository.activateDegreeById(id);
         if (updatedRows > 0) {
             return "Degree activated successfully.";
@@ -71,7 +86,6 @@ public class DegreeServiceImpl implements DegreeService {
             throw new DataNotFoundException("Degree not found with id: " + id);
         }
     }
-
     private DegreeResponseDTO mapToResponseDTO(DegreeEntity degree, Locale locale) {
         String level;
         String name;

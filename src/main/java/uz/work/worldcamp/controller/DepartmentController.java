@@ -13,6 +13,7 @@ import uz.work.worldcamp.dtos.responceDto.DepartmentResponseDTO;
 import uz.work.worldcamp.service.departmentService.DepartmentService;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @RestController
@@ -28,8 +29,8 @@ public class DepartmentController {
     )
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/")
-    public ResponseEntity<DepartmentResponseDTO> createDepartment(@RequestBody DepartmentCreateDTO department) {
-        DepartmentResponseDTO createdDepartment = departmentService.createDepartment(department);
+    public ResponseEntity<DepartmentResponseDTO> createDepartment(@RequestBody DepartmentCreateDTO department, Locale locale) {
+        DepartmentResponseDTO createdDepartment = departmentService.createDepartment(department, locale);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdDepartment);
     }
 
@@ -39,9 +40,12 @@ public class DepartmentController {
             security = @SecurityRequirement(name = "pre authorize", scopes = {"ADMIN"})
     )
     @PermitAll
-    @GetMapping("/getALL")
-    public ResponseEntity<List<DepartmentResponseDTO>> getAllDepartments() {
-        return ResponseEntity.ok(departmentService.getAllDepartments());
+    @GetMapping("/getALL/{universityId}")
+    public ResponseEntity<List<DepartmentResponseDTO>> getAllDepartments(
+            @RequestParam (required = false)String searchWord,
+            @PathVariable UUID universityId,
+            Locale locale) {
+        return ResponseEntity.ok(departmentService.getAllDepartments(searchWord,universityId, locale));
     }
 
     @Operation(
@@ -51,8 +55,8 @@ public class DepartmentController {
     )
     @PermitAll
     @GetMapping("/{id}")
-    public ResponseEntity<DepartmentResponseDTO> getDepartmentById(@PathVariable UUID id) {
-        DepartmentResponseDTO department = departmentService.getDepartmentById(id);
+    public ResponseEntity<DepartmentResponseDTO> getDepartmentById(@PathVariable UUID id, Locale locale) {
+        DepartmentResponseDTO department = departmentService.getDepartmentById(id, locale);
         return ResponseEntity.ok(department);
     }
 

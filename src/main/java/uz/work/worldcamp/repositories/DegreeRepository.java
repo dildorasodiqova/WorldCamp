@@ -7,10 +7,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import uz.work.worldcamp.entities.DegreeEntity;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface DegreeRepository extends JpaRepository<DegreeEntity, UUID> {
 
+    List<DegreeEntity> findAllByUniversityIdAndIsActiveTrue(UUID universityId);
 
     @Query("SELECT CASE WHEN COUNT(d) > 0 THEN TRUE ELSE FALSE END FROM degreeEntity d WHERE d.levelEng = :levelEng OR d.levelUz = :levelUz OR d.levelRus = :levelRus")
     boolean existsByLevel(@Param("levelEng") String levelEng, @Param("levelUz") String levelUz, @Param("levelRus") String levelRus);

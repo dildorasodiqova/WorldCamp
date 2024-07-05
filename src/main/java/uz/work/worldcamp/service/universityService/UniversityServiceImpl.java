@@ -1,6 +1,7 @@
 package uz.work.worldcamp.service.universityService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.work.worldcamp.dtos.createDto.UniversityCreateDTO;
@@ -14,13 +15,11 @@ import uz.work.worldcamp.service.cityService.CityService;
 import uz.work.worldcamp.service.countryService.CountryService;
 import uz.work.worldcamp.service.facultyService.FacultyService;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UniversityServiceImpl implements UniversityService{
     private final UniversityRepository universityRepository;
@@ -29,17 +28,34 @@ public class UniversityServiceImpl implements UniversityService{
     @Transactional
     @Override
     public UniversityResponseDTO createUniversity(UniversityCreateDTO dto, Locale locale) {
-        Optional<UniversityEntity> existingUniversity = universityRepository.findByName(dto.getNameEng(),dto.getNameUz(), dto.getNameRus());
+        log.info("Creating university with names: {}, {}, {}", dto.getNameEng(), dto.getNameUz(), dto.getNameRus());
+        Optional<UniversityEntity> existingUniversity = universityRepository.findByName(dto.getNameEng(), dto.getNameUz(), dto.getNameRus());
         if (existingUniversity.isPresent()) {
-            throw new IllegalArgumentException("University with this name already exists in the city and country.");
+            log.warn("University with names: {}, {}, {} already exists in the city and country.", dto.getNameEng(), dto.getNameUz(), dto.getNameRus());
+            throw new DataNotFoundException("University with this name already exists in the city and country.");
         }
         UniversityEntity save = universityRepository.save(new UniversityEntity(dto.getNameUz(), dto.getNameRus(), dto.getNameEng(), dto.getCountryId(), dto.getCityId()));
+        log.info("University created successfully with ID: {}", save.getId());
         return convertToResponseDTO(save, locale);
     }
 
     @Override
-    public List<UniversityResponseDTO> getAllUniversities(UUID countryId, UUID cityId, Locale locale) {
-        List<UniversityEntity> universities = universityRepository.findByCountryIdAndCityId(countryId, cityId);
+    public List<UniversityResponseDTO> getAllUniversities(UUID countryId, UUID cityId, String searchWord,  Locale locale) {
+        log.info("Fetching all universities with countryId: {}, cityId: {} and searchWord: {}", countryId, cityId, searchWord);
+
+        List<UniversityEntity> universities;
+        if (countryId == null) {
+            log.warn("CountryId is null, fetching all universities without country filter.");
+            universities = universityRepository.findByCountryIdAndCityIdAndSearchWord(null, cityId, searchWord);
+        } else {
+            universities = universityRepository.findByCountryIdAndCityIdAndSearchWord(countryId, cityId, searchWord);
+        }
+
+        if (universities == null) {
+            log.warn("No universities found for countryId: {}, cityId: {} and searchWord: {}", countryId, cityId, searchWord);
+            return Collections.emptyList();
+        }
+
         return universities.stream()
                 .map(university -> convertToResponseDTO(university, locale))
                 .collect(Collectors.toList());
@@ -47,47 +63,50 @@ public class UniversityServiceImpl implements UniversityService{
 
     @Override
     public UniversityResponseDTO getUniversityById(UUID id, Locale locale) {
+        log.info("Fetching university with ID: {}", id);
         UniversityEntity university = universityRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("University not found."));
+                .orElseThrow(() -> new DataNotFoundException("University not found."));
+        log.info("University found with ID: {}", id);
         return convertToResponseDTO(university, locale);
     }
 
     @Transactional
     @Override
     public UniversityResponseDTO updateUniversity(UUID id, UniversityCreateDTO dto, Locale locale) {
-        UniversityEntity entity = universityRepository.findById(id).orElseThrow(() -> new DataNotFoundException("University not found !"));
+        log.info("Updating university with ID: {}", id);
+        UniversityEntity entity = universityRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("University not found !"));
 
-        if (universityRepository.existsByNameAndIdNot(id, dto.getNameEng(), dto.getNameUz(), dto.getNameRus())){
-            throw  new DataNotFoundException("University name already exists");
+        if (universityRepository.existsByNameAndIdNot(id, dto.getNameEng(), dto.getNameUz(), dto.getNameRus())) {
+            log.warn("University name already exists with names: {}, {}, {}", dto.getNameEng(), dto.getNameUz(), dto.getNameRus());
+            throw new DataNotFoundException("University name already exists");
         }
 
-        UniversityEntity set = set(entity, dto);
-
-        return convertToResponseDTO(set, locale);
+        UniversityEntity updatedEntity = set(entity, dto);
+        log.info("University updated successfully with ID: {}", updatedEntity.getId());
+        return convertToResponseDTO(updatedEntity, locale);
     }
 
-    private  UniversityEntity set(UniversityEntity entity, UniversityCreateDTO dto){
-        // Set names
+    private UniversityEntity set(UniversityEntity entity, UniversityCreateDTO dto) {
+
+        log.info("Setting university details for: {}, {}, {}", dto.getNameEng(), dto.getNameUz(), dto.getNameRus());
+
         entity.setNameUz(dto.getNameUz());
         entity.setNameRus(dto.getNameRus());
         entity.setNameEng(dto.getNameEng());
 
-        // Set short names
         entity.setShortNameUz(dto.getShortNameUz());
         entity.setShortNameRus(dto.getShortNameRus());
         entity.setShortNameEng(dto.getShortNameEng());
 
-        // Set about information
         entity.setAboutUz(dto.getAboutUz());
         entity.setAboutRus(dto.getAboutRus());
         entity.setAboutEng(dto.getAboutEng());
 
-        // Set history information
         entity.setHistoryUz(dto.getHistoryUz());
         entity.setHistoryRus(dto.getHistoryRus());
         entity.setHistoryEng(dto.getHistoryEng());
 
-        // Set additional details
         entity.setData(dto.getData());
         entity.setContact(dto.getContact());
         entity.setLicense(dto.getLicense());
@@ -96,7 +115,6 @@ public class UniversityServiceImpl implements UniversityService{
         entity.setWorldRating(dto.getWorldRating());
         entity.setAnotherRating(dto.getAnotherRating());
 
-        // Set element collections and maps
         entity.setEduForm(dto.getEduForm());
         entity.setEduDirection(dto.getEduDirection());
         entity.setAchievements(dto.getAchievements());
@@ -115,38 +133,41 @@ public class UniversityServiceImpl implements UniversityService{
         entity.setAddition(dto.getAddition());
         entity.setPartner(dto.getPartner());
 
-        // Set embedded objects
         entity.setLocation(dto.getLocation());
         entity.setAddress(dto.getAddress());
         entity.setContract(dto.getContract());
 
-        // Set IDs and relationships
         entity.setCountryId(dto.getCountryId());
         entity.setCityId(dto.getCityId());
 
-        ///buyerda facultetlarini qilmadimku
         return entity;
     }
 
     @Override
     public String deleteFaculty(UUID id) {
+        log.info("Deactivating faculty with ID: {}", id);
         int updatedRows = universityRepository.deactivateUniversityById(id);
         if (updatedRows > 0) {
+            log.info("Faculty deactivated successfully with ID: {}", id);
             return "Faculty deactivated successfully.";
         } else {
-            throw new DataNotFoundException("Faculty not found with id: " + id);
-        }
-    }
-    @Override
-    public String activateFaculty(UUID id) {
-        int updatedRows = universityRepository.activateUniversityById(id);
-        if (updatedRows > 0) {
-            return "Faculty activated successfully.";
-        } else {
+            log.warn("Faculty not found with ID: {}", id);
             throw new DataNotFoundException("Faculty not found with id: " + id);
         }
     }
 
+    @Override
+    public String activateFaculty(UUID id) {
+        log.info("Activating faculty with ID: {}", id);
+        int updatedRows = universityRepository.activateUniversityById(id);
+        if (updatedRows > 0) {
+            log.info("Faculty activated successfully with ID: {}", id);
+            return "Faculty activated successfully.";
+        } else {
+            log.warn("Faculty not found with ID: {}", id);
+            throw new DataNotFoundException("Faculty not found with id: " + id);
+        }
+    }
     private UniversityResponseDTO convertToResponseDTO(UniversityEntity u, Locale locale) {
         String name;
         String shortName;

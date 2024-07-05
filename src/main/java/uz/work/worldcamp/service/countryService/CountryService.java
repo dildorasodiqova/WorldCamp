@@ -5,16 +5,17 @@ import uz.work.worldcamp.dtos.responceDto.CountryResponseDTO;
 import uz.work.worldcamp.entities.CountryEntity;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public interface CountryService {
-    CountryResponseDTO create(CountryCreateDTO dto);
-    List<CountryResponseDTO> getAllCountries();
-    CountryResponseDTO updateCountry(UUID id, CountryCreateDTO countryCreateDTO);
+    CountryResponseDTO create(CountryCreateDTO dto, Locale locale);
+    List<CountryResponseDTO> getAllCountries(String searchWord , Locale locale);
+    CountryResponseDTO updateCountry(UUID id, CountryCreateDTO countryCreateDTO, Locale locale);
     String deleteCountry(UUID id);
 
     String activateCountry(UUID id);
 
 
-    CountryEntity getById(UUID countryId);
+    CountryResponseDTO getById(UUID countryId, Locale locale);
 }
