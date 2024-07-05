@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.work.worldcamp.dtos.createDto.ForgetDto;
@@ -40,7 +41,7 @@ public class AuthController {
 
     @PermitAll
     @PostMapping("/sign-up")
-    public UserResponseDTO signUp(@Valid @RequestBody UserCreateDTO dto) {
+    public UserResponseDTO signUp(@Valid @RequestBody UserCreateDTO dto) throws BadRequestException {
         return userService.signUp(dto);
     }
 
