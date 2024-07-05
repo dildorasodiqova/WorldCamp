@@ -14,6 +14,7 @@ import uz.work.worldcamp.dtos.responceDto.JwtResponse;
 import uz.work.worldcamp.dtos.responceDto.UserResponseDTO;
 import uz.work.worldcamp.entities.UserEntity;
 import uz.work.worldcamp.entities.UserPassword;
+import uz.work.worldcamp.enums.SmsType;
 import uz.work.worldcamp.exception.DataNotFoundException;
 import uz.work.worldcamp.repositories.PasswordRepository;
 import uz.work.worldcamp.repositories.UserRepository;
@@ -176,7 +177,8 @@ public class UserServiceImpl  implements UserService{
         }
         String generatedString = RandomStringUtils.randomAlphanumeric(5);
         SmsDto smsDto = new SmsDto(generatedString, userEntity.getPhoneNumber());
-        smsService.sendSms(smsDto);
+        /// shuyerda registration deganim togrmi ?
+        smsService.sendMessage(smsDto, SmsType.REGISTRATION, userEntity.getId());
         passwordRepository.save(new UserPassword(generatedString, userEntity, LocalDateTime.now(), 3));
     }
 

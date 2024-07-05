@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import uz.work.worldcamp.dtos.createDto.SmsDto;
 import uz.work.worldcamp.dtos.createDto.VerifyDto;
+import uz.work.worldcamp.dtos.responceDto.ApiResponse;
 import uz.work.worldcamp.dtos.responceDto.UserResponseDTO;
 import uz.work.worldcamp.entities.SmsHistoryEntity;
 import uz.work.worldcamp.entities.SmsTokenEntity;
@@ -54,15 +56,15 @@ public class SmsApiService {
         this.userRepository = userRepository;
     }
 
-    public ApiResponse<?> sendMessage(String phone, SmsType type, String message, UUID clientLogin) {
+    public ApiResponse<?> sendMessage(SmsDto smsDto, SmsType type, UUID clientLogin) {
 
         SmsHistoryEntity build = SmsHistoryEntity
                 .builder()
-                .message(message)
+                .message(smsDto.getMessage())
                 .type(type)
                 .smsCount(0)
                 .status(SmsStatus.SEND)
-                .phone(phone)
+                .phone(smsDto.getPhoneNumber())
                 .clientLogin(clientLogin)
                 .build();
         SmsHistoryEntity smsHistory = smsHistoryRepository.save(build);
