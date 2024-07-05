@@ -2,6 +2,7 @@ package uz.work.worldcamp.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,7 +28,7 @@ public class FacultyController {
     )
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
-    public ResponseEntity<FacultyResponseDTO> createFaculty(@RequestBody FacultyCreateDTO faculty, @RequestParam Locale locale) {
+    public ResponseEntity<FacultyResponseDTO> createFaculty(@Valid @RequestBody FacultyCreateDTO faculty, @RequestParam Locale locale) {
         FacultyResponseDTO response = facultyService.createFaculty(faculty, locale);
         return ResponseEntity.ok(response);
     }
@@ -66,7 +67,7 @@ public class FacultyController {
     )
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<FacultyResponseDTO> updateFaculty(@PathVariable UUID id, @RequestBody FacultyCreateDTO facultyDto,  Locale locale) {
+    public ResponseEntity<FacultyResponseDTO> updateFaculty(@PathVariable UUID id,@Valid @RequestBody FacultyCreateDTO facultyDto,  Locale locale) {
         FacultyResponseDTO response = facultyService.updateFaculty(id, facultyDto, locale);
         return ResponseEntity.ok(response);
     }

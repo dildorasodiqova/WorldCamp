@@ -3,6 +3,7 @@ package uz.work.worldcamp.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.annotation.security.PermitAll;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ public class FacultyCommentController {
     )
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/")
-    public ResponseEntity<FacultyCommentResponseDto> createComment(@RequestBody FacultyCommentCreateDto facultyComment, @RequestParam Locale locale) {
+    public ResponseEntity<FacultyCommentResponseDto> createComment(@Valid @RequestBody FacultyCommentCreateDto facultyComment, @RequestParam Locale locale) {
         FacultyCommentResponseDto createdComment = facultyCommentService.createComment(facultyComment, locale);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdComment);
     }

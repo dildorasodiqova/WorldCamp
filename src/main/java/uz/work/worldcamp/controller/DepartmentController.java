@@ -3,6 +3,7 @@ package uz.work.worldcamp.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.annotation.security.PermitAll;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ public class DepartmentController {
     )
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/")
-    public ResponseEntity<DepartmentResponseDTO> createDepartment(@RequestBody DepartmentCreateDTO department, Locale locale) {
+    public ResponseEntity<DepartmentResponseDTO> createDepartment(@Valid @RequestBody DepartmentCreateDTO department, Locale locale) {
         DepartmentResponseDTO createdDepartment = departmentService.createDepartment(department, locale);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdDepartment);
     }
@@ -91,7 +92,7 @@ public class DepartmentController {
     )
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateDepartment(@PathVariable UUID id, @RequestBody DepartmentCreateDTO departmentCreateDTO) {
+    public ResponseEntity<String> updateDepartment(@PathVariable UUID id,@Valid @RequestBody DepartmentCreateDTO departmentCreateDTO) {
         String result = departmentService.updateDepartment(id, departmentCreateDTO);
         return ResponseEntity.ok(result);
     }

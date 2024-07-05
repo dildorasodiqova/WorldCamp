@@ -3,6 +3,7 @@ package uz.work.worldcamp.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.annotation.security.PermitAll;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ public class CityController {
     )
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/")
-    public ResponseEntity<CityResponseDTO> createCity(@RequestBody CityCreateDTO dto, Locale locale) {
+    public ResponseEntity<CityResponseDTO> createCity(@Valid @RequestBody CityCreateDTO dto, Locale locale) {
         CityResponseDTO createdCity = cityService.createCity(dto, locale);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCity);
     }
@@ -81,7 +82,7 @@ public class CityController {
     )
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<CityResponseDTO> updateCity(@PathVariable UUID id, @RequestBody CityCreateDTO dto, @RequestParam Locale locale) {
+    public ResponseEntity<CityResponseDTO> updateCity(@PathVariable UUID id,@Valid @RequestBody CityCreateDTO dto, @RequestParam Locale locale) {
         CityResponseDTO updatedCity = cityService.updateCity(id, dto, locale);
         return ResponseEntity.ok(updatedCity);
     }

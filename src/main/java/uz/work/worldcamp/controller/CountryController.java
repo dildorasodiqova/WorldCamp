@@ -3,6 +3,7 @@ package uz.work.worldcamp.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.annotation.security.PermitAll;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,7 +29,7 @@ public class CountryController {
     )
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
-    public ResponseEntity<CountryResponseDTO> createCountry(@RequestBody CountryCreateDTO dto, Locale locale) {
+    public ResponseEntity<CountryResponseDTO> createCountry(@Valid @RequestBody CountryCreateDTO dto, Locale locale) {
         CountryResponseDTO createdCountry = countryService.create(dto, locale);
         return ResponseEntity.ok(createdCountry);
     }
@@ -54,7 +55,7 @@ public class CountryController {
     @PutMapping("/update/{id}")
     public ResponseEntity<CountryResponseDTO> updateCountryByUUID(
             @PathVariable UUID id,
-            @RequestBody CountryCreateDTO dto,
+            @Valid @RequestBody CountryCreateDTO dto,
             Locale locale) {
         CountryResponseDTO updatedCountry = countryService.updateCountry(id, dto, locale);
         return ResponseEntity.ok(updatedCountry);

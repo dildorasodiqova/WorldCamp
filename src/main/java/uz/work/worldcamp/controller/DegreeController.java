@@ -3,6 +3,7 @@ package uz.work.worldcamp.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.annotation.security.PermitAll;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ public class DegreeController {
     )
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/")
-    public ResponseEntity<DegreeResponseDTO> createDegree(@RequestBody DegreeCreateDTO degree, Locale locale) {
+    public ResponseEntity<DegreeResponseDTO> createDegree(@Valid @RequestBody DegreeCreateDTO degree, Locale locale) {
         DegreeResponseDTO createdDegree = degreeService.createDegree(degree, locale);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdDegree);
     }
@@ -53,7 +54,7 @@ public class DegreeController {
     )
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateDegree(@PathVariable UUID id, @RequestBody DegreeCreateDTO degreeCreateDTO) {
+    public ResponseEntity<String> updateDegree(@PathVariable UUID id,@Valid @RequestBody DegreeCreateDTO degreeCreateDTO) {
         return ResponseEntity.ok( degreeService.update(id, degreeCreateDTO));
     }
 

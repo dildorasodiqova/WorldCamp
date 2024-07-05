@@ -3,6 +3,7 @@ package uz.work.worldcamp.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.annotation.security.PermitAll;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,7 +29,7 @@ public class UniversityController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/create")
     public ResponseEntity<UniversityResponseDTO> createUniversity(
-            @RequestBody UniversityCreateDTO dto,
+            @Valid @RequestBody UniversityCreateDTO dto,
              Locale locale) {
 
         return ResponseEntity.ok(universityService.createUniversity(dto, locale));
@@ -69,7 +70,7 @@ public class UniversityController {
     @PutMapping("/update/{id}")
     public ResponseEntity<UniversityResponseDTO> updateUniversity(
             @PathVariable UUID id,
-            @RequestBody UniversityCreateDTO dto,
+            @Valid @RequestBody UniversityCreateDTO dto,
              Locale locale) {
         UniversityResponseDTO updatedUniversity = universityService.updateUniversity(id, dto, locale);
         return ResponseEntity.ok(updatedUniversity);

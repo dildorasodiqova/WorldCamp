@@ -14,8 +14,11 @@ import java.util.UUID;
 @Setter
 public class UserResponseDTO {
     private UUID id;
-    private String phoneNumber;
+    private String fullName;
     private String email;
+    private String phoneNumber;
+    private String avatar;
+    private String educationLevel;
     private LocalDateTime createdDate;
     private LocalDateTime updateDate;
 }

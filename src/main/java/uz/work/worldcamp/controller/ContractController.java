@@ -2,6 +2,7 @@ package uz.work.worldcamp.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class ContractController {
     )
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
-    public ResponseEntity<ContractResponseDto> createContract(@RequestBody ContractCreateDto contractCreateDto) {
+    public ResponseEntity<ContractResponseDto> createContract(@Valid @RequestBody ContractCreateDto contractCreateDto) {
         ContractResponseDto contract = contractService.createContract(contractCreateDto);
         return new ResponseEntity<>(contract, HttpStatus.CREATED);
     }
@@ -37,7 +38,7 @@ public class ContractController {
     )
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<ContractResponseDto> updateContract(@PathVariable UUID id, @RequestBody ContractCreateDto contractCreateDto) {
+    public ResponseEntity<ContractResponseDto> updateContract(@PathVariable UUID id,@Valid @RequestBody ContractCreateDto contractCreateDto) {
         ContractResponseDto contract = contractService.updateContract(id, contractCreateDto);
         return ResponseEntity.ok(contract);
     }

@@ -12,6 +12,6 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     List<UserEntity> findAllByIsActiveTrue();
-
+    Optional<UserEntity> findByEmailOrPhoneNumber(String email, String phoneNumber);
     Optional<UserEntity> findByEmail(String email);
 }
